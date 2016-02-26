@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Obstacle : MonoBehaviour {
 
-	public float fObsRadius = 0.5f;
+	public float fObsRadius = 10.0f;
 
 	// Use this for initialization
 	void Start () {

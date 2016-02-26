@@ -267,15 +267,15 @@ public class FSMNpcTrackState : FSMBaseState{
 		m_GameObject = data.thisPoint;
 		nComponent = m_GameObject.GetComponent<NPC> ();
 		//如果沒有小於攻擊範圍，就追逐
-		if (data.iAstarIndex > -1) {
-			Debug.Log ("iAstarIndex" + data.iAstarIndex);
-			Debug.Log ("GetPathPointNumber" + (nComponent.m_AStar.GetPathPointNumber () - 1));
-			if (data.iAstarIndex < (nComponent.m_AStar.GetPathPointNumber () - 1)) {
+		//if (data.iAstarIndex > -1) {
+			//Debug.Log ("iAstarIndex" + data.iAstarIndex);
+			//Debug.Log ("GetPathPointNumber" + (nComponent.m_AStar.GetPathPointNumber () - 1));
+			//if (data.iAstarIndex < (nComponent.m_AStar.GetPathPointNumber () - 1)) {
 				//多久做一次找seek點，會影響效能
 				//Debug.Log ("多久做一次找seek點，會影響效能");
-				nComponent.m_AStar.GetAStarSeekPoint (data, ref data.iAstarIndex, ref data.targetPosition);
+				//nComponent.m_AStar.GetAStarSeekPoint (data, ref data.iAstarIndex, ref data.targetPosition);
 				//m_AStar.GetAStarSeekPoint (this.transform.position, ref m_AIData.iAstarIndex, ref m_AIData.targetPosition);
-			}
+			//}
 			//m_Seek (this.gameObject, m_AIdata);
 			if (AIBehavior.OBS (data.thisPoint, data, false) == false) { //如果沒有撞到東西
 				if (AIBehavior.Seek (data.thisPoint, data) == false) {
@@ -293,11 +293,11 @@ public class FSMNpcTrackState : FSMBaseState{
 			fTime += Time.deltaTime;
 			//返回
 			return;
-		} else {
-			if (nComponent.m_AStar.AStarSearch (nComponent.m_AStar.transform.position, data.targetPosition)) { //如果傳給Astar的結果為true，iAstarIndex設為0
-				data.iAstarIndex = 0;
-			}
-		}
+		//} else {
+			//if (nComponent.m_AStar.AStarSearch (nComponent.m_AStar.transform.position, data.targetPosition)) { //如果傳給Astar的結果為true，iAstarIndex設為0
+				//data.iAstarIndex = 0;
+			//}
+		//}
 		//*/
 		Debug.Log (data.thisPoint+"目前狀態：" + m_StateID);
 	}
@@ -451,6 +451,9 @@ public class FSMIdleState : FSMBaseState{
 	bool bArrival;
 	float fDist;
 	Vector3 tVec;
+	GameObject m_Collision;
+	bool bTest;
+	Vector3 vForward;
 
 	public FSMIdleState(){
 		m_StateID = eStateID.Idle;
@@ -468,40 +471,61 @@ public class FSMIdleState : FSMBaseState{
 	//因為是複寫的，所以是override
 	public override void CheckState (AIData data){
 		if (Input.GetMouseButtonDown (0)) {
+			bTest = false;
 			Ray r = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit rHit;
 			if (Physics.Raycast (r, out rHit, 100000.0f, 1 << LayerMask.NameToLayer ("Enemy"))) {
 				if (rHit.collider.gameObject.layer == 10) {//10是Enemy的Layer
 					iHit = 0;
 					data.targetPoint = rHit.collider.gameObject;
+					data.targetPosition = data.targetPoint.gameObject.transform.position;
+					data.targetPosition.z = SceneManager.m_Instance.fPlayerX;
+					tVec = data.targetPosition - data.thisPoint.gameObject.transform.position;
+					data.thisPoint.gameObject.transform.forward = tVec;
 
 				} 
 			} else if (Physics.Raycast (r, out rHit, 100000.0f, 1 << LayerMask.NameToLayer ("Terrain"))) {
 				iHit = 1;
 				data.targetPosition = rHit.point;
-				data.targetPosition.y = 1.0f;
-				data.targetPosition.z = 0.0f;
+				data.targetPosition.z = SceneManager.m_Instance.fPlayerX;
+
+				tVec = data.targetPosition - data.thisPoint.gameObject.transform.position;
+				data.thisPoint.gameObject.transform.forward = tVec;
+				Debug.Log (data.targetPosition);
 			}
 		}
 	}
 	
 	public override void DoState (AIData data){
 		Debug.Log (data.thisPoint + "目前狀態：" + m_StateID);
-		if (iHit == 0) {
-			Debug.Log ("移動到目標中");
-			data.targetPosition = data.targetPoint.gameObject.transform.position;
-			data.targetPosition.y = 1.0f;
-			data.targetPosition.z = 0.0f;
-			tVec = data.targetPosition - data.thisPoint.gameObject.transform.position;
-			fDist = tVec.magnitude;
-			//if (fDist < data.fDetectLength) {
-			//	Debug.Log ("到達可視範圍");
-			//	return;
-			//} else 
-			if (fDist < data.fAttackLength) {
-				Debug.Log ("到達攻擊範圍");
-				return;
-			} else {
+		bTest = AIBehavior.OBSWall (data.thisPoint, data, out vForward);
+		if (bTest == false && vForward == Vector3.zero) {
+			if (iHit == 0) {
+				Debug.Log ("移動到目標中");
+				data.targetPosition = data.targetPoint.gameObject.transform.position;
+				data.targetPosition.z = SceneManager.m_Instance.fPlayerX;
+				tVec = data.targetPosition - data.thisPoint.gameObject.transform.position;
+				fDist = tVec.magnitude;
+				//if (fDist < data.fDetectLength) {
+				//	Debug.Log ("到達可視範圍");
+				//	return;
+				//} else 
+				if (fDist < data.fAttackLength) {
+					Debug.Log ("到達攻擊範圍");
+					return;
+				} else {
+					if (AIBehavior.OBS (data.thisPoint, data, false) == false) {//如果沒有撞到東西
+						if (AIBehavior.Seek (data.thisPoint, data) == false) {
+							bArrival = true;
+							return;
+						}
+					}
+					AIBehavior.MoveForward (data.thisPoint, data);
+				}
+			} else if (iHit == 1) {
+				Debug.Log ("移動到目的地中");
+				Debug.Log (data.thisPoint.transform.position);
+				data.thisPosition = data.thisPoint.transform.position;
 				if (AIBehavior.OBS (data.thisPoint, data, false) == false) {//如果沒有撞到東西
 					if (AIBehavior.Seek (data.thisPoint, data) == false) {
 						bArrival = true;
@@ -510,16 +534,8 @@ public class FSMIdleState : FSMBaseState{
 				}
 				AIBehavior.MoveForward (data.thisPoint, data);
 			}
-		} else if (iHit == 1) {
-			Debug.Log ("移動到目的地中");
-			if (AIBehavior.OBS (data.thisPoint, data, false) == false) {//如果沒有撞到東西
-				if (AIBehavior.Seek (data.thisPoint, data) == false) {
-					bArrival = true;
-					return;
-				}
-			}
-			AIBehavior.MoveForward (data.thisPoint, data);
 		}
+		//bTest = false;
 		return;
 	}
 }

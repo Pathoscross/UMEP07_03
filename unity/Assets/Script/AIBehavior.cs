@@ -16,9 +16,11 @@ public class AIData{
 	public GameObject targetPoint;
 	
 	public Obstacle[] m_Obs;
+	public Wall[] m_Wall;
 	public float fRadius = 1.0f;
 
 	public Vector3 targetPosition; //目標位置
+	public Vector3 thisPosition; //自己位置
 	public int iAstarIndex; //目前seek到的Astar是第幾個點
 
 	public float fDetectLength; //可視範圍長度
@@ -233,6 +235,69 @@ public class AIBehavior{
 			return true;
 		}
 		data.fInTrapTime = 0.0f;
+		return false;
+	}
+
+	public static bool OBSWall(GameObject go, AIData data, out Vector3 vForward){
+		
+		Wall [] obsWall = data.m_Wall;
+		int iLength = obsWall.Length;
+		
+		Vector3 tPos;
+		Vector3 tVec;
+		Vector3 cPos = go.transform.position;
+		Vector3 cFor = go.transform.forward;
+		float fDist = 0.0f;;
+		float fTotalR = 0.0f;
+		
+		float fDot;
+		
+		float fTheta;
+		float fSinLen = 0.0f;
+		
+		Wall mMinObs = null;
+		float fMinDist = 10000.0f; //設一個值用來比較目前最小距離
+		
+		for (int i=0; i<iLength; i++) {
+			tPos = obsWall [i].transform.position;
+			tVec = tPos - cPos;
+			fDist = tVec.magnitude;
+			fTotalR = data.fRadius + obsWall [i].fWallColProbe;
+			float fTotalR2 = data.fColProbe + fTotalR;
+			
+			//兩者距離>探針長度+兩者的radius，跳過
+			if (fDist > data.fColProbe + fTotalR) {
+				continue;
+			}
+			
+			//Dot<0，在背面，跳過
+			tVec.Normalize ();
+			fDot = Vector3.Dot (cFor, tVec);
+			if (fDot < 0.01f) {
+				continue;
+			} else if (fDot > 1.0f) {
+				fDot = 1.0f;
+			}
+			
+			//sin距離>兩者的radius，跳過
+			fTheta = Mathf.Acos(fDot);
+			fSinLen = fDist*Mathf.Sin(fTheta);
+			if(fSinLen > fTotalR){
+				continue;
+			}
+			
+			if(fDist < fMinDist){
+				mMinObs = obsWall[i];
+				fMinDist = fDist;
+			}
+		}
+		
+		//如果mMinObs不是null就轉向
+		if (mMinObs != null) {
+			vForward = mMinObs.transform.forward;
+			return true;
+		}
+		vForward = Vector3.zero;
 		return false;
 	}
 

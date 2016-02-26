@@ -29,11 +29,12 @@ public class Player : MonoBehaviour {
 		m_AIData.thisPoint = this.gameObject;
 		m_AIData.targetPoint = targetPoint;
 		m_AIData.m_Obs = SceneManager.m_Instance.m_Obs;
+		m_AIData.m_Wall = SceneManager.m_Instance.m_Wall;
 		m_AIData.fRadius = 0.5f;
 		m_AIData.iAstarIndex = -1;
 		m_AIData.targetPosition = Vector3.zero;
-		m_AIData.fDetectLength = 5.0f;
-		m_AIData.fAttackLength = 2.0f;
+		m_AIData.fDetectLength = 20.0f;
+		m_AIData.fAttackLength = 10.0f;
 		m_AIData.fLife = 1000.0f;
 		m_AIData.fAttack = 10.0f;
 		//FSM的設定
@@ -68,6 +69,10 @@ public class Player : MonoBehaviour {
 	void Update () {
 		m_FSMManager.DoState(m_AIData);
 	}
+
+	//void OnCollisionEnter(Collision collision) {
+		//collision.transform.position
+	//}
 
 	void OnDrawGizmos(){
 
