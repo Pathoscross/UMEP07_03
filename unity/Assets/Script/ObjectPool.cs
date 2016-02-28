@@ -136,6 +136,35 @@ public class ObjectPool : MonoBehaviour {
 		return bRet;
 	}
 
+	public bool FindObjectToPool(out int ioutSlotOP, GameObject go) {
+		int iSlot = m_GameObjects.Length;
+		int iOut = -1;
+		bool bRet = false;
+		//if(iSlot < 0 || iSlot >= m_iNumGameObjectInType) {
+			//return true;	
+		//}
+		//Debug.Log ("iCount="+iCount);
+		for (int i = 0; i < iSlot; i++) {
+			if (m_GameObjects [i] != null) {
+				int iCount = m_GameObjects [i].Count;
+				Debug.Log ("m_GameObjects[iSlot]" + iCount);
+				for (int j = 0; j < iCount; j++) {
+					ObjectPoolData objData = m_GameObjects [i] [j];
+					if (objData.m_go == go) {
+						iOut = i;
+						if (objData.m_bUsing == true) {
+							ioutSlotOP = iOut;
+							bRet = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		ioutSlotOP = iOut;
+		return bRet;
+	}
+	/*
 	public bool FindObjectToPool(int iSlot, GameObject go)
 	{
 		if(iSlot < 0 || iSlot >= m_iNumGameObjectInType) {
@@ -157,7 +186,7 @@ public class ObjectPool : MonoBehaviour {
 		}
 		return bRet;
 	}
-	
+	*/
 	//針對某一個Slot，把裡面的物件清掉
 	public void DestroyPoolSlot(int iSlot)
 	{

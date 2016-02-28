@@ -22,6 +22,7 @@ public class AIData{
 	public Vector3 targetPosition; //目標位置
 	public Vector3 thisPosition; //自己位置
 	public int iAstarIndex; //目前seek到的Astar是第幾個點
+	public float thisPositionZ; //自己位置的Z軸
 
 	public float fDetectLength; //可視範圍長度
 	public float fAttackLength; //攻擊範圍長度
@@ -263,8 +264,6 @@ public class AIBehavior{
 			tVec = tPos - cPos;
 			fDist = tVec.magnitude;
 			fTotalR = data.fRadius + obsWall [i].fWallColProbe;
-			float fTotalR2 = data.fColProbe + fTotalR;
-			
 			//兩者距離>探針長度+兩者的radius，跳過
 			if (fDist > data.fColProbe + fTotalR) {
 				continue;
@@ -301,38 +300,34 @@ public class AIBehavior{
 		return false;
 	}
 
-	public static GameObject CheckPlayer(AIData data, out float fOutMinDist, out int ioutTarget){ //(裡面回傳距離，判定距離過小時直接進行攻擊等等)
+	public static GameObject CheckPlayer(AIData data, out float fOutMinDist, out int ioutSlotAI){ //(裡面回傳距離，判定距離過小時直接進行攻擊等等)
 		
 		GameObject [] gos = SceneManager.m_Instance.m_EnemyTarget;
+		Vector3 tPos;
 		Vector3 tVec;
 		float fDist = 0.0f;
 		float fMinDist = 10000.0f;
 		GameObject go = null;
-		int iTarget = -1;
+		//int iTarget = -1;
 		bool bUsing = false;
+		ioutSlotAI = -1;
 		int iLength = SceneManager.m_Instance.m_EnemyTarget.Length;
 		for (int i=0; i<iLength; i++) {
-			tVec = gos[i].transform.position-data.thisPoint.gameObject.transform.position;
+			tPos = gos [i].transform.position;
+			tPos.z = data.thisPositionZ;
+			tVec = tPos - data.thisPoint.gameObject.transform.position;
 			fDist = tVec.magnitude;
-			//如果目前距離>可視範圍就無視
-			//if(fDist > m_AIData.fDetectLength){
-			//	continue;
-			//}
-			//如果要做背面的敵人就無視，可以在這邊先tVec.Normalize()，再Vector3.Dot(自己面向,tVec)
-			//如果Dot<0.0f就continue(0.0f可以根據可視角度作調整)
-			
-			//如果目前距離<最小距離就更新最小距離
-			
-			bUsing = ObjectPool.m_Instance.FindObjectToPool(i, gos[i].gameObject);
-			Debug.Log ("啟用="+bUsing);
-			if(fDist < fMinDist && bUsing == true){
+			bUsing = ObjectPool.m_Instance.FindObjectToPool (out ioutSlotAI, gos [i].gameObject);
+			//bUsing = ObjectPool.m_Instance.FindObjectToPool(i, gos[i].gameObject);
+			Debug.Log ("啟用=" + bUsing);
+			if (fDist < fMinDist && bUsing == true) {
 				Debug.Log ("找到目標");
-				iTarget = i;
+				//iTarget = i;
 				fMinDist = fDist;
-				go = gos[i];
+				go = gos [i];
 			}
 		}
-		ioutTarget = iTarget;
+		//ioutTarget = iTarget;
 		fOutMinDist = fMinDist;
 		return go;
 	}

@@ -35,7 +35,7 @@ public class Player : MonoBehaviour {
 		m_AIData.targetPosition = Vector3.zero;
 		m_AIData.fDetectLength = 20.0f;
 		m_AIData.fAttackLength = 10.0f;
-		m_AIData.fLife = 1000.0f;
+		m_AIData.fLife = 100.0f;
 		m_AIData.fAttack = 10.0f;
 		//FSM的設定
 		m_FSMManager = new FSMManager ();
@@ -70,9 +70,14 @@ public class Player : MonoBehaviour {
 		m_FSMManager.DoState(m_AIData);
 	}
 
-	//void OnCollisionEnter(Collision collision) {
-		//collision.transform.position
-	//}
+	void OnTriggerEnter(Collider collider) {
+		if (collider.transform.name == "_scene_end_limit") {
+			Debug.Log ("==============================碰到出口===================");
+			Debug.Log ("==============================獲勝，遊戲結束===================");
+			SceneManager.m_Instance.bEnd = true;
+			SceneManager.m_Instance.bWinOrLose = true;
+		}
+	}
 
 	void OnDrawGizmos(){
 

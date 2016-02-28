@@ -41,7 +41,7 @@ public class NPC : MonoBehaviour {
 		m_AIData.targetPosition = Vector3.zero;
 		m_AIData.fDetectLength = 20.0f;
 		m_AIData.fAttackLength = 10.0f;
-		m_AIData.fLife = 50.0f;
+		m_AIData.fLife = 20.0f;
 		m_AIData.fAttack = 10.0f;
 		/*
 			生成隊長時呼叫自己的小兵，並傳入變數給小兵，指派他的隊長
@@ -50,25 +50,20 @@ public class NPC : MonoBehaviour {
 		m_FSMManager = new FSMManager ();
 		FSMNpcIdleState IdleState = new FSMNpcIdleState ();
 		FSMNpcTrackState TrackState = new FSMNpcTrackState ();
-		FSMNpcChaseState ChaseState = new FSMNpcChaseState ();
 		FSMNpcAttackState AttackState = new FSMNpcAttackState ();
 		IdleState.AddTransition (eTransitionID.Idle_To_Track, eStateID.Track);
-		TrackState.AddTransition (eTransitionID.Track_To_Chase, eStateID.Chase);
 		TrackState.AddTransition (eTransitionID.Track_To_Attack, eStateID.Attack);
-		ChaseState.AddTransition (eTransitionID.Chase_To_Attack, eStateID.Attack);
-		ChaseState.AddTransition (eTransitionID.Chase_To_Idle, eStateID.Idle);
-		AttackState.AddTransition (eTransitionID.Attack_To_Chase, eStateID.Chase);
 		AttackState.AddTransition (eTransitionID.Attack_To_Idle, eStateID.Idle);
+		AttackState.AddTransition (eTransitionID.Attack_To_Track, eStateID.Track);
 		m_FSMManager.AddState (IdleState);
 		m_FSMManager.AddState (TrackState);
-		m_FSMManager.AddState (ChaseState);
 		m_FSMManager.AddState (AttackState);
 		m_AIData.m_State = m_FSMManager;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		//m_FSMManager.DoState(m_AIData);
+		m_FSMManager.DoState(m_AIData);
 		/*
 		m_FSMManager.CurrentState ().CheckState (m_AIData);
 		m_FSMManager.CurrentState ().DoState (m_AIData);

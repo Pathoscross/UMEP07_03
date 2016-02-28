@@ -15,6 +15,7 @@ public enum eTransitionID {
 	Wander_To_Idle,
 	Chase_To_Attack,
 	Chase_To_Idle,
+	Attack_To_Track,
 	Attack_To_Chase,
 	Attack_To_Idle,
 	Idle_To_Wander
@@ -188,6 +189,8 @@ public class FSMNpcIdleState : FSMBaseState{
 
 	public FSMNpcIdleState(){
 		m_StateID = eStateID.Idle;
+		fTime = 0.0f;
+		fIdleTime = 1.0f;
 	}
 
 	public override void DoBeforeEnter (AIData data){
@@ -199,7 +202,6 @@ public class FSMNpcIdleState : FSMBaseState{
 		if(fTime > fIdleTime){
 			fTime = 0.0f;
 			data.m_State.PerformTransition(eTransitionID.Idle_To_Track, data);
-			
 		}
 	}
 	
@@ -213,10 +215,10 @@ public class FSMNpcTrackState : FSMBaseState{
 	
 	private float fTime;
 	private float fTrackTime;
-	GameObject m_GameObject = null;
-	NPC nComponent = null;
+	//GameObject m_GameObject = null;
+	//NPC nComponent = null;
 	float fDist;
-	int iTarget;
+	int iSlotFSM;
 	
 	public FSMNpcTrackState(){
 		m_StateID = eStateID.Track;
@@ -233,53 +235,30 @@ public class FSMNpcTrackState : FSMBaseState{
 	public override void CheckState (AIData data){
 		//尋找目標
 		fDist = 10000.0f;
-		iTarget = -1;
-		data.targetPoint = AIBehavior.CheckPlayer (data, out fDist, out iTarget);
+		iSlotFSM = -1;
+		data.targetPoint = AIBehavior.CheckPlayer (data, out fDist, out iSlotFSM);
 		if (data.targetPoint != null) {
 			Debug.Log ("有目標");
 			data.targetPosition = data.targetPoint.transform.position;
-			Debug.Log (data.targetPosition);
-			//狀態切換
-			bool bCol = Physics.Linecast(data.thisPoint.gameObject.transform.position, data.targetPosition, 1 << LayerMask.NameToLayer("Obstacle"));
-			if (fDist < data.fDetectLength && bCol == false) { //距離小於可視範圍
-				data.m_State.PerformTransition (eTransitionID.Track_To_Chase, data);
-			} else if (fDist < data.fAttackLength && bCol == false) { //距離小於攻擊範圍
+			//if (fDist < data.fDetectLength) { //距離小於可視範圍
+			//	data.m_State.PerformTransition (eTransitionID.Track_To_Chase, data);
+			//} else 
+			if (fDist < data.fAttackLength) { //距離小於攻擊範圍
 				data.m_State.PerformTransition (eTransitionID.Track_To_Attack, data);
 			}
-		} else {
-			m_PreviousStateID = ePreviousStateID.Track;
-			data.m_State.PerformTransition (eTransitionID.Track_To_Wander, data);
 		}
 	}
 	
 	public override void DoState (AIData data){
 		Debug.Log ("前往目標");
-		/*
-		//m_Seek (this.gameObject, m_AIdata);
-		if (AIBehavior.OBS (data.thisPoint, data, false) == false) { //如果沒有撞到東西
-			if (AIBehavior.Seek (data.thisPoint, data) == false) {
-				return;
-			}
-		}
-		AIBehavior.MoveForward (data.thisPoint, data);
-		*/
-		///*
-		m_GameObject = data.thisPoint;
-		nComponent = m_GameObject.GetComponent<NPC> ();
-		//如果沒有小於攻擊範圍，就追逐
-		//if (data.iAstarIndex > -1) {
-			//Debug.Log ("iAstarIndex" + data.iAstarIndex);
-			//Debug.Log ("GetPathPointNumber" + (nComponent.m_AStar.GetPathPointNumber () - 1));
-			//if (data.iAstarIndex < (nComponent.m_AStar.GetPathPointNumber () - 1)) {
-				//多久做一次找seek點，會影響效能
-				//Debug.Log ("多久做一次找seek點，會影響效能");
-				//nComponent.m_AStar.GetAStarSeekPoint (data, ref data.iAstarIndex, ref data.targetPosition);
-				//m_AStar.GetAStarSeekPoint (this.transform.position, ref m_AIData.iAstarIndex, ref m_AIData.targetPosition);
-			//}
-			//m_Seek (this.gameObject, m_AIdata);
+		//m_GameObject = data.thisPoint;
+		//nComponent = m_GameObject.GetComponent<NPC> ();
+		data.targetPosition.z = data.thisPositionZ;
+		Debug.Log("data.targetPosition"+data.targetPosition);
+		Debug.Log ("fDist："+fDist);
 			if (AIBehavior.OBS (data.thisPoint, data, false) == false) { //如果沒有撞到東西
 				if (AIBehavior.Seek (data.thisPoint, data) == false) {
-					data.iAstarIndex = -1;
+
 				}
 			}
 			AIBehavior.MoveForward (data.thisPoint, data);
@@ -287,18 +266,11 @@ public class FSMNpcTrackState : FSMBaseState{
 		
 			if (fTime > fTrackTime) {
 				data.targetPoint = null; //把目標清掉
-				data.iAstarIndex = -1;
 				fTime = 0.0f;
 			}
 			fTime += Time.deltaTime;
 			//返回
 			return;
-		//} else {
-			//if (nComponent.m_AStar.AStarSearch (nComponent.m_AStar.transform.position, data.targetPosition)) { //如果傳給Astar的結果為true，iAstarIndex設為0
-				//data.iAstarIndex = 0;
-			//}
-		//}
-		//*/
 		Debug.Log (data.thisPoint+"目前狀態：" + m_StateID);
 	}
 
@@ -307,54 +279,20 @@ public class FSMNpcTrackState : FSMBaseState{
 	}	
 }
 
-public class FSMNpcChaseState : FSMBaseState{
-	
-	private float fTime;
-	float fDist;
-	int iTarget;
-	
-	public FSMNpcChaseState(){
-		m_StateID = eStateID.Chase;
-	}
-	
-	//因為是複寫的，所以是override
-	public override void CheckState (AIData data){
-		fDist = 10000.0f;
-		iTarget = -1;
-		data.targetPoint = AIBehavior.CheckPlayer (data, out fDist, out iTarget);
-		if (data.targetPoint != null) {
-			if (fDist < data.fAttackLength) { //如果距離小於攻擊範圍，切到攻擊狀態
-				data.m_State.PerformTransition (eTransitionID.Chase_To_Attack, data);
-			}
-		} else{ //回到Idel狀態
-			data.m_State.PerformTransition (eTransitionID.Chase_To_Idle, data);
-		}
-	}
-	
-	public override void DoState (AIData data){
-		Debug.Log (data.thisPoint+"目前狀態：" + m_StateID);
-		if (AIBehavior.OBS (data.thisPoint, data, false) == false) { //如果沒有撞到東西
-			if (AIBehavior.Seek (data.thisPoint, data) == false) {
-				return;
-			}
-		}
-		AIBehavior.MoveForward (data.thisPoint, data);
-	}
-}
-
 public class FSMNpcAttackState : FSMBaseState{
 
 	public float fTime;
 	public float fAttackTime; //攻擊動作的時間
+	public float fAttackWaiteTime; //攻擊間隔的時間
 	GameObject m_GameObject = null;
 	Player pComponent = null;
 	float fDist;
-	int iTarget;
+	int iSlotFSM;
 	
 	public FSMNpcAttackState(){
 		m_StateID = eStateID.Attack;
 		fTime = 0.0f;
-		fAttackTime = 2.0f;
+		fAttackTime = 1.0f;
 	}
 	
 	public override void DoBeforeEnter (AIData data)
@@ -368,12 +306,12 @@ public class FSMNpcAttackState : FSMBaseState{
 	//因為是複寫的，所以是override
 	public override void CheckState (AIData data){
 		fDist = 10000.0f;
-		iTarget = -1;
-		data.targetPoint = AIBehavior.CheckPlayer (data, out fDist, out iTarget);
+		iSlotFSM = -1;
+		data.targetPoint = AIBehavior.CheckPlayer (data, out fDist, out iSlotFSM);
 		if (data.targetPoint != null) {
 			//m_AIData.targetAIData = m_AIData.targetPoint;
 			if (fDist >= data.fAttackLength) { //如果距離大於攻擊範圍，切到追逐狀態
-				data.m_State.PerformTransition (eTransitionID.Attack_To_Chase, data);
+				data.m_State.PerformTransition (eTransitionID.Attack_To_Track, data);
 			}
 		} else{ //回到Idel狀態
 			data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
@@ -384,17 +322,26 @@ public class FSMNpcAttackState : FSMBaseState{
 		Debug.Log (data.thisPoint+"目前狀態：" + m_StateID);
 		m_GameObject = data.targetPoint;
 		pComponent = m_GameObject.GetComponent<Player>();
-		pComponent.m_AIData.fLife -= data.fAttack;
-		Debug.Log (pComponent.m_AIData.fLife);
-		if(pComponent.m_AIData.fLife == 0.0f){
-			ObjectPool.m_Instance.UnLoadObjectToPool(iTarget, data.targetPoint.gameObject);
-			data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
-		}
 		Color r = Color.black;
 		r.r = Random.Range(0.0f, 1.0f);
 		r.g = Random.Range(0.0f, 1.0f);
 		r.b = Random.Range(0.0f, 1.0f);
-		data.thisPoint.GetComponent<Renderer>().material.color = r;
+		data.thisPoint.GetComponent<Renderer> ().material.color = r;
+		if (fTime > fAttackTime) {
+			fTime = 0.0f;
+			pComponent.m_AIData.fLife -= data.fAttack;
+			if(pComponent.m_AIData.fLife <= 0){
+				pComponent.m_AIData.fLife = 0;
+			}
+			Debug.Log (pComponent.m_AIData.fLife);
+			if(pComponent.m_AIData.fLife == 0.0f){
+				ObjectPool.m_Instance.UnLoadObjectToPool(iSlotFSM, data.targetPoint.gameObject);
+				data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
+			}
+			data.thisPoint.GetComponent<Renderer> ().material.color = Color.white;
+			data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
+		}
+		fTime += Time.deltaTime;
 		//if (fTime > fAttackTime) { 
 			//data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
 		//}
@@ -445,8 +392,8 @@ public class FSMNpcWanderState : FSMBaseState{
 public class FSMIdleState : FSMBaseState{
 	
 	private float fTime;
+	private float fAttackTime;
 	int iHit;
-	bool bHit;
 	Vector3 hitPos;
 	bool bArrival;
 	float fDist;
@@ -454,12 +401,15 @@ public class FSMIdleState : FSMBaseState{
 	GameObject m_Collision;
 	bool bTest;
 	Vector3 vForward;
+	GameObject m_GameObject = null;
+	NPC nComponent = null;
+	int iSlotFSM;
 
 	public FSMIdleState(){
 		m_StateID = eStateID.Idle;
 		fTime = 0.0f;
+		fAttackTime = 1.0f;
 		iHit = -1;
-		bHit = false;
 		bArrival = false;
 		fDist = 0.0f;
 	}
@@ -470,28 +420,30 @@ public class FSMIdleState : FSMBaseState{
 	
 	//因為是複寫的，所以是override
 	public override void CheckState (AIData data){
-		if (Input.GetMouseButtonDown (0)) {
-			bTest = false;
-			Ray r = Camera.main.ScreenPointToRay (Input.mousePosition);
-			RaycastHit rHit;
-			if (Physics.Raycast (r, out rHit, 100000.0f, 1 << LayerMask.NameToLayer ("Enemy"))) {
-				if (rHit.collider.gameObject.layer == 10) {//10是Enemy的Layer
-					iHit = 0;
-					data.targetPoint = rHit.collider.gameObject;
-					data.targetPosition = data.targetPoint.gameObject.transform.position;
-					data.targetPosition.z = SceneManager.m_Instance.fPlayerX;
+		Debug.Log ("bWinOrLose："+SceneManager.m_Instance.bWinOrLose);
+		if (SceneManager.m_Instance.bEnd == false) {
+			if (Input.GetMouseButtonDown (0)) {
+				bTest = false;
+				Ray r = Camera.main.ScreenPointToRay (Input.mousePosition);
+				RaycastHit rHit;
+				if (Physics.Raycast (r, out rHit, 100000.0f, 1 << LayerMask.NameToLayer ("Enemy"))) {
+					if (rHit.collider.gameObject.layer == 10) {//10是Enemy的Layer
+						iHit = 0;
+						data.targetPoint = rHit.collider.gameObject;
+						data.targetPosition = data.targetPoint.gameObject.transform.position;
+						data.targetPosition.z = SceneManager.m_Instance.fPlayerZ;
+						tVec = data.targetPosition - data.thisPoint.gameObject.transform.position;
+						data.thisPoint.gameObject.transform.forward = tVec;
+
+					} 
+				} else if (Physics.Raycast (r, out rHit, 100000.0f, 1 << LayerMask.NameToLayer ("Terrain"))) {
+					iHit = 1;
+					data.targetPosition = rHit.point;
+					data.targetPosition.z = SceneManager.m_Instance.fPlayerZ;
 					tVec = data.targetPosition - data.thisPoint.gameObject.transform.position;
 					data.thisPoint.gameObject.transform.forward = tVec;
-
-				} 
-			} else if (Physics.Raycast (r, out rHit, 100000.0f, 1 << LayerMask.NameToLayer ("Terrain"))) {
-				iHit = 1;
-				data.targetPosition = rHit.point;
-				data.targetPosition.z = SceneManager.m_Instance.fPlayerX;
-
-				tVec = data.targetPosition - data.thisPoint.gameObject.transform.position;
-				data.thisPoint.gameObject.transform.forward = tVec;
-				Debug.Log (data.targetPosition);
+					Debug.Log (data.targetPosition);
+				}
 			}
 		}
 	}
@@ -501,17 +453,40 @@ public class FSMIdleState : FSMBaseState{
 		bTest = AIBehavior.OBSWall (data.thisPoint, data, out vForward);
 		if (bTest == false && vForward == Vector3.zero) {
 			if (iHit == 0) {
+				iSlotFSM = -1;
 				Debug.Log ("移動到目標中");
 				data.targetPosition = data.targetPoint.gameObject.transform.position;
-				data.targetPosition.z = SceneManager.m_Instance.fPlayerX;
+				data.targetPosition.z = SceneManager.m_Instance.fPlayerZ;
 				tVec = data.targetPosition - data.thisPoint.gameObject.transform.position;
 				fDist = tVec.magnitude;
-				//if (fDist < data.fDetectLength) {
-				//	Debug.Log ("到達可視範圍");
-				//	return;
-				//} else 
+				ObjectPool.m_Instance.FindObjectToPool(out iSlotFSM, data.targetPoint.gameObject);
 				if (fDist < data.fAttackLength) {
 					Debug.Log ("到達攻擊範圍");
+
+
+					m_GameObject = data.targetPoint;
+					nComponent = m_GameObject.GetComponent<NPC>();
+					//攻擊動作
+					Debug.Log ("fTime："+fTime);
+					Debug.Log ("fAttackTime："+fAttackTime);
+					if (fTime > fAttackTime) {
+						fTime = 0.0f;
+						nComponent.m_AIData.fLife -= data.fAttack;
+						if(nComponent.m_AIData.fLife <= 0){
+							nComponent.m_AIData.fLife = 0;
+						}
+						Debug.Log ("======================NPC："+nComponent.m_AIData.fLife);
+						if(nComponent.m_AIData.fLife == 0.0f){
+							ObjectPool.m_Instance.UnLoadObjectToPool(iSlotFSM, data.targetPoint.gameObject);
+							//return;
+							//回到idle狀態
+							//data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
+						}
+						iHit = -1;
+						data.targetPoint = null;
+						//data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
+					}
+					fTime += Time.deltaTime;
 					return;
 				} else {
 					if (AIBehavior.OBS (data.thisPoint, data, false) == false) {//如果沒有撞到東西
