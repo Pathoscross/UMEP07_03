@@ -26,8 +26,13 @@ public class AIData{
 
 	public float fDetectLength; //可視範圍長度
 	public float fAttackLength; //攻擊範圍長度
-	public float fLife = 0.0f; //生命值
+	public float fHP = 0.0f; //生命值
+	public float fMP = 0.0f; //生命值
+	public float fMaxHP = 0.0f; //生命值
+	public float fMaxMP = 0.0f; //生命值
 	public float fAttack = 0.0f; //攻擊力
+	public float fSkill = 0.0f; //技能攻擊力
+	public float fSkillMP = 0.0f; //技能損MP
 	public AIData targetAIData;
 
 	public FSMManager m_State;
@@ -36,7 +41,7 @@ public class AIData{
 public class AIBehavior{
 
 	public static void Attack(AIData data){
-		data.targetAIData.fLife -= data.fAttack;
+		data.targetAIData.fHP -= data.fAttack;
 	}
 
 	public static bool Seek(GameObject go, AIData data){

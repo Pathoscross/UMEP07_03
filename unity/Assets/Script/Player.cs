@@ -35,8 +35,10 @@ public class Player : MonoBehaviour {
 		m_AIData.targetPosition = Vector3.zero;
 		m_AIData.fDetectLength = 20.0f;
 		m_AIData.fAttackLength = 10.0f;
-		m_AIData.fLife = 100.0f;
+		m_AIData.fHP = 100.0f;
+		m_AIData.fMP = 30.0f;
 		m_AIData.fAttack = 10.0f;
+		m_AIData.fSkill = 30.0f;
 		//FSM的設定
 		m_FSMManager = new FSMManager ();
 		FSMIdleState IdleState = new FSMIdleState ();

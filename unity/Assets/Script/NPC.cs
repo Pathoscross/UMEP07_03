@@ -4,10 +4,6 @@ using System.Collections;
 public class NPC : MonoBehaviour {
 	//Instance
 	public static NPC m_Instance;
-	//基本設定
-	public float fTime = 0.0f;
-	public float fIdelTime = 3.0f;
-	public float fAttackTime = 2.0f; //攻擊動作的時間
 	//AIData
 	public AIData m_AIData = new AIData ();
 	public GameObject targetPoint;
@@ -41,8 +37,13 @@ public class NPC : MonoBehaviour {
 		m_AIData.targetPosition = Vector3.zero;
 		m_AIData.fDetectLength = 20.0f;
 		m_AIData.fAttackLength = 10.0f;
-		m_AIData.fLife = 20.0f;
+		m_AIData.fHP = 20.0f;
+		m_AIData.fMP = 50.0f;
+		m_AIData.fMaxHP = 20.0f;
+		m_AIData.fMaxMP = 50.0f;
 		m_AIData.fAttack = 10.0f;
+		m_AIData.fSkill = 30.0f;
+		m_AIData.fSkillMP = 20.0f;
 		/*
 			生成隊長時呼叫自己的小兵，並傳入變數給小兵，指派他的隊長
 		*/
@@ -51,13 +52,18 @@ public class NPC : MonoBehaviour {
 		FSMNpcIdleState IdleState = new FSMNpcIdleState ();
 		FSMNpcTrackState TrackState = new FSMNpcTrackState ();
 		FSMNpcAttackState AttackState = new FSMNpcAttackState ();
+		FSMNpcSkillState SkillState = new FSMNpcSkillState ();
 		IdleState.AddTransition (eTransitionID.Idle_To_Track, eStateID.Track);
 		TrackState.AddTransition (eTransitionID.Track_To_Attack, eStateID.Attack);
+		TrackState.AddTransition (eTransitionID.Track_To_Skill, eStateID.Skill);
 		AttackState.AddTransition (eTransitionID.Attack_To_Idle, eStateID.Idle);
 		AttackState.AddTransition (eTransitionID.Attack_To_Track, eStateID.Track);
+		SkillState.AddTransition (eTransitionID.Skill_To_Idle, eStateID.Idle);
+		SkillState.AddTransition (eTransitionID.Skill_To_Track, eStateID.Track);
 		m_FSMManager.AddState (IdleState);
 		m_FSMManager.AddState (TrackState);
 		m_FSMManager.AddState (AttackState);
+		m_FSMManager.AddState (SkillState);
 		m_AIData.m_State = m_FSMManager;
 	}
 	
