@@ -72,15 +72,22 @@
      <Compile Include="Assets\Script\SceneManager.cs" />
      <Compile Include="Assets\Script\Target.cs" />
      <Compile Include="Assets\Script\Wall.cs" />
+     <Compile Include="Assets\Script\peoplego.cs" />
      <None Include="Assets\First Fantasy for Mobile\Environments\Shaders\Mobile Transparent Vertex Color.shader" />
      <None Include="Assets\Blade_NPC_SpecialPack\Shader\Unlit_2Side.shader" />
      <None Include="Assets\First Fantasy for Mobile\Environments\Shaders\Mobile Particles Additive Culled.shader" />
      <None Include="Assets\Resources\WP.txt" />
+ <Reference Include="UnityEngine.Advertisements">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Analytics">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Cecil">
  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/Mono.Cecil.dll</HintPath>

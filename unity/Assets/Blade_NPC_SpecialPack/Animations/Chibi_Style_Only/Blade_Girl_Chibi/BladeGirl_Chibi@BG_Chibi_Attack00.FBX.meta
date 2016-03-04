@@ -116,6 +116,7 @@ ModelImporter:
     4300004: BG_Chibi_Body_Base
     4300006: BG_Chibi_Head_Base
     7400000: Take 001
+    9500000: //RootNode
     11100000: //RootNode
     13700000: BG_Chibi_Body_Base
     13700002: BG_Chibi_Head_Base
@@ -134,7 +135,7 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5
@@ -179,7 +180,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 1
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
