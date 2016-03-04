@@ -4,10 +4,6 @@ using System.Collections;
 public class Player : MonoBehaviour {
 	//Instance
 	public static Player m_Instance;
-	//基本設定
-	public float fTime = 0.0f;
-	public float fIdelTime = 3.0f;
-	public float fAttackTime = 2.0f; //攻擊動作的時間
 	//AIData
 	public AIData m_AIData = new AIData ();
 	public GameObject targetPoint;

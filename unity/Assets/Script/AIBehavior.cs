@@ -65,8 +65,6 @@ public class AIBehavior{
 		} else if (data.fspeed < 0.1f) {
 			data.fspeed = 0.1f;
 		}
-
-
 		
 		//go.transform.position += cFor * data.fspeed * Time.deltaTime;
 

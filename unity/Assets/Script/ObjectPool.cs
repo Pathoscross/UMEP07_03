@@ -139,20 +139,6 @@ public class ObjectPool : MonoBehaviour {
 				}
 			}
 		}
-		/*
-		for(int i = 0; i < iCount; i++) {
-			ObjectPoolData objData = m_GameObjects[iSlot][i];
-			if(objData.m_go == go) {
-				objData.m_bUsing = false;
-				EnableModel(go, false);
-				//ShowModel(go, false);
-				//go.active = false;
-				m_GameObjects[iSlot][i] = objData;
-				bRet = true;
-				break;
-			}
-		}
-		*/
 		ioutSlotOP = iOut;
 		return bRet;
 	}
@@ -208,29 +194,6 @@ public class ObjectPool : MonoBehaviour {
 		}
 		return go;
 	}
-	/*
-	public bool FindObjectToPool(int iSlot, GameObject go)
-	{
-		if(iSlot < 0 || iSlot >= m_iNumGameObjectInType) {
-			return true;	
-		}
-		bool bRet = false;
-		int iCount = m_GameObjects[iSlot].Count;
-		//Debug.Log ("iCount="+iCount);
-		for (int i = 0; i < iCount; i++) {
-			ObjectPoolData objData = m_GameObjects [iSlot] [i];
-			if (objData.m_go == go) {
-				//Debug.Log ("objData.m_go="+objData.m_go);
-				//Debug.Log ("go="+go);
-				if (objData.m_bUsing == true) {
-					bRet = true;
-					break;
-				}
-			}
-		}
-		return bRet;
-	}
-	*/
 	//針對某一個Slot，把裡面的物件清掉
 	public void DestroyPoolSlot(int iSlot)
 	{

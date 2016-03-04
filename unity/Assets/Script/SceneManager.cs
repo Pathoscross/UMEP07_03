@@ -76,16 +76,16 @@ public class SceneManager : MonoBehaviour {
 		//玩家Prefab
 		//int iCount = ObjectPool.m_Instance.m_GameObjects [0].Count;
 		//for (int i=0; i<iPlayerCount; i++) {
-			go = ObjectPool.m_Instance.LoadObjectFromPool (0);
-			//到時直接安排位置，不用Random
-			pos = Vector3.zero;
-			pos.x = 130.0f;
-			pos.y = 0.0f;
-			pos.z = 45.0f;
-			fPlayerZ = pos.z;
-			go.transform.position = pos;
-			//Vector3.right指向-x，left指向x
-			go.transform.forward = Vector3.right;
+		go = ObjectPool.m_Instance.LoadObjectFromPool (0);
+		//到時直接安排位置，不用Random
+		pos = Vector3.zero;
+		pos.x = 130.0f;
+		pos.y = 0.0f;
+		pos.z = 45.0f;
+		fPlayerZ = pos.z;
+		go.transform.position = pos;
+		//Vector3.right指向-x，left指向x
+		go.transform.forward = Vector3.right;
 		//}
 
 		//生成敵人Prefab
