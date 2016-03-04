@@ -72,7 +72,6 @@
      <Compile Include="Assets\Script\SceneManager.cs" />
      <Compile Include="Assets\Script\Target.cs" />
      <Compile Include="Assets\Script\Wall.cs" />
-     <Compile Include="Assets\Script\peoplego.cs" />
      <None Include="Assets\First Fantasy for Mobile\Environments\Shaders\Mobile Transparent Vertex Color.shader" />
      <None Include="Assets\Blade_NPC_SpecialPack\Shader\Unlit_2Side.shader" />
      <None Include="Assets\First Fantasy for Mobile\Environments\Shaders\Mobile Particles Additive Culled.shader" />

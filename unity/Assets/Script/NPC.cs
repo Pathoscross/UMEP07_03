@@ -37,7 +37,7 @@ public class NPC : MonoBehaviour {
 		m_AIData.targetPosition = Vector3.zero;
 		m_AIData.fDetectLength = 20.0f;
 		m_AIData.fAttackLength = 10.0f;
-		m_AIData.fHP = 20.0f;
+		m_AIData.fHP = 50.0f;
 		m_AIData.fMP = 50.0f;
 		m_AIData.fMaxHP = 20.0f;
 		m_AIData.fMaxMP = 50.0f;

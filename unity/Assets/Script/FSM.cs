@@ -566,19 +566,22 @@ public class FSMIdleState : FSMBaseState{
 	public override void DoState (AIData data){
 		Debug.Log (data.thisPoint + "目前狀態：" + m_StateID);
 		bTest = AIBehavior.OBSWall (data.thisPoint, data, out vForward);
+		m_GameObject = data.thisPoint;
+		pComponent = m_GameObject.GetComponent<Player>();
 		if (bTest == false && vForward == Vector3.zero) {
 			if (iHit == 0) {
+				pComponent.iNowEgo = Player.eEgo.Run;
 				iSlotFSM = -1;
 				Debug.Log ("移動到目標中");
 				data.targetPosition = data.targetPoint.gameObject.transform.position;
 				data.targetPosition.z = SceneManager.m_Instance.fPlayerZ;
 				tVec = data.targetPosition - data.thisPoint.gameObject.transform.position;
+				data.thisPoint.transform.forward = tVec;
 				fDist = tVec.magnitude;
 				ObjectPool.m_Instance.FindObjectToPool(out iSlotFSM, data.targetPoint.gameObject);
 				if (fDist < data.fAttackLength) {
 					Debug.Log ("到達攻擊範圍");
-
-
+					pComponent.iNowEgo = Player.eEgo.Attac;
 					m_GameObject = data.targetPoint;
 					nComponent = m_GameObject.GetComponent<NPC>();
 					//攻擊動作
@@ -598,6 +601,7 @@ public class FSMIdleState : FSMBaseState{
 							//data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
 						}
 						iHit = -1;
+						pComponent.iNowEgo = Player.eEgo.Idle;
 						data.targetPoint = null;
 						//data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
 					}
@@ -606,6 +610,7 @@ public class FSMIdleState : FSMBaseState{
 				} else {
 					if (AIBehavior.OBS (data.thisPoint, data, false) == false) {//如果沒有撞到東西
 						if (AIBehavior.Seek (data.thisPoint, data) == false) {
+							pComponent.iNowEgo = Player.eEgo.Idle;
 							bArrival = true;
 							return;
 						}
@@ -613,8 +618,6 @@ public class FSMIdleState : FSMBaseState{
 					AIBehavior.MoveForward (data.thisPoint, data);
 				}
 			} else if (iHit == 1) {
-				m_GameObject = data.thisPoint;
-				pComponent = m_GameObject.GetComponent<Player>();
 				pComponent.iNowEgo = Player.eEgo.Run;
 				//Player.m_Instance.iNowEgo = Player.eEgo.Run;
 				Debug.Log ("移動到目的地中");
@@ -622,6 +625,7 @@ public class FSMIdleState : FSMBaseState{
 				data.thisPosition = data.thisPoint.transform.position;
 				if (AIBehavior.OBS (data.thisPoint, data, false) == false) {//如果沒有撞到東西
 					if (AIBehavior.Seek (data.thisPoint, data) == false) {
+						pComponent.iNowEgo = Player.eEgo.Idle;
 						bArrival = true;
 						return;
 					}

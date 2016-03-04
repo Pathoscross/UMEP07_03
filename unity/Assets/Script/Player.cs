@@ -40,7 +40,7 @@ public class Player : MonoBehaviour {
 	void Start () {
 		m_AStar = this.GetComponent<AStar>();;
 		//m_AIData初始化
-		m_AIData.fspeed = 0.1f;
+		m_AIData.fspeed = 20.0f;
 		m_AIData.fMaxspeed = m_fMaxSpeed;
 		m_AIData.frotate = 0.0f;
 		m_AIData.fMaxrotate = 10.0f;
