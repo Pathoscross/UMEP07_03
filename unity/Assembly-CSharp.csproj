@@ -45,10 +45,25 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Blade_NPC_SpecialPack\scripts\MaterialChange.cs" />
+     <Compile Include="Assets\Blade_NPC_SpecialPack\scripts\characterButtonGirl.cs" />
+     <Compile Include="Assets\Blade_NPC_SpecialPack\scripts\characterButtonGirlChibi.cs" />
+     <Compile Include="Assets\Blade_NPC_SpecialPack\scripts\characterButtonGirlCos.cs" />
+     <Compile Include="Assets\Blade_NPC_SpecialPack\scripts\characterButtonWarrior.cs" />
+     <Compile Include="Assets\Blade_NPC_SpecialPack\scripts\characterButtonWarriorChibi.cs" />
+     <Compile Include="Assets\Blade_NPC_SpecialPack\scripts\characterButtonWarriorCos.cs" />
+     <Compile Include="Assets\First Fantasy for Mobile\Environments\Scripts\CloudFlow.cs" />
+     <Compile Include="Assets\First Fantasy for Mobile\Environments\Scripts\FloatObject.cs" />
+     <Compile Include="Assets\First Fantasy for Mobile\Environments\Scripts\FollowObject.cs" />
+     <Compile Include="Assets\First Fantasy for Mobile\Environments\Scripts\RandomMoveOnTerrain.cs" />
+     <Compile Include="Assets\First Fantasy for Mobile\Environments\Scripts\WaterFlow.cs" />
      <Compile Include="Assets\Script\AIBehavior.cs" />
      <Compile Include="Assets\Script\AStar.cs" />
-     <Compile Include="Assets\Script\Enemy.cs" />
+     <Compile Include="Assets\Script\FSM.cs" />
+     <Compile Include="Assets\Script\FollowingCamera.cs" />
      <Compile Include="Assets\Script\LoadPathPoint.cs" />
+     <Compile Include="Assets\Script\NPC.cs" />
+     <Compile Include="Assets\Script\ObjectPool.cs" />
      <Compile Include="Assets\Script\Obstacle.cs" />
      <Compile Include="Assets\Script\PathNode.cs" />
      <Compile Include="Assets\Script\Player.cs" />
@@ -56,6 +71,10 @@
      <Compile Include="Assets\Script\PointLine.cs" />
      <Compile Include="Assets\Script\SceneManager.cs" />
      <Compile Include="Assets\Script\Target.cs" />
+     <Compile Include="Assets\Script\Wall.cs" />
+     <None Include="Assets\First Fantasy for Mobile\Environments\Shaders\Mobile Transparent Vertex Color.shader" />
+     <None Include="Assets\Blade_NPC_SpecialPack\Shader\Unlit_2Side.shader" />
+     <None Include="Assets\First Fantasy for Mobile\Environments\Shaders\Mobile Particles Additive Culled.shader" />
      <None Include="Assets\Resources\WP.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

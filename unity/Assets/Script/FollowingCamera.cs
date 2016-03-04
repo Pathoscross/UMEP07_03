@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class FollowingCamera : MonoBehaviour
 {
-    private Transform m_Target = null;
+    public Transform m_Target = null;
 
     private void Start()
     {
