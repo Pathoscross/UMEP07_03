@@ -112,6 +112,8 @@ public class SceneManager : MonoBehaviour {
 			go.transform.position = pos;
 			go.transform.forward = Vector3.left;
 		}
+		GameObject goTest = ObjectPool.m_Instance.FindNowPlayer ();
+		Debug.Log ("目前的玩家物件名稱："+goTest.gameObject.name);
 	}
 
 	// Use this for initialization

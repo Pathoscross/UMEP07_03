@@ -164,6 +164,29 @@ public class ObjectPool : MonoBehaviour {
 		ioutSlotOP = iOut;
 		return bRet;
 	}
+	public GameObject FindNowPlayer() {
+		GameObject go = null;
+		int iSlot = m_GameObjects.Length;
+		bool bRet = false;
+		//if(iSlot < 0 || iSlot >= m_iNumGameObjectInType) {
+		//return true;	
+		//}
+		//Debug.Log ("iCount="+iCount);
+		for (int i = 0; i < iSlot; i++) {
+			if (m_GameObjects [i] != null) {
+				int iCount = m_GameObjects [i].Count;
+				for (int j = 0; j < iCount; j++) {
+					ObjectPoolData objData = m_GameObjects [i] [j];
+					if(objData.m_go.gameObject.tag == "Player"){
+						if (objData.m_bUsing == true) {
+							go = objData.m_go;
+						}
+					}
+				}
+			}
+		}
+		return go;
+	}
 	/*
 	public bool FindObjectToPool(int iSlot, GameObject go)
 	{
