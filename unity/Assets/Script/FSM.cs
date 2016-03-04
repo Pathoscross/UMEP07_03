@@ -368,7 +368,7 @@ public class FSMNpcAttackState : FSMBaseState{
 			//=============================完=============================
 			Debug.Log (pComponent.m_AIData.fHP);
 			if (pComponent.m_AIData.fHP == 0.0f) {
-				ObjectPool.m_Instance.UnLoadObjectToPool (iSlotFSM, data.targetPoint.gameObject);
+				ObjectPool.m_Instance.UnLoadObjectToPool (out iSlotFSM, data.targetPoint.gameObject);
 				data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
 			}
 			//=============================測試用=============================
@@ -451,7 +451,7 @@ public class FSMNpcSkillState : FSMBaseState{
 			Debug.Log (pComponent.m_AIData.fHP);
 			if (pComponent.m_AIData.fHP == 0.0f) {
 				Debug.Log (data.thisPoint + "===攻擊目標===" + data.targetPoint.gameObject + "===死亡===");
-				ObjectPool.m_Instance.UnLoadObjectToPool (iSlotFSM, data.targetPoint.gameObject);
+				ObjectPool.m_Instance.UnLoadObjectToPool (out iSlotFSM, data.targetPoint.gameObject);
 				data.m_State.PerformTransition (eTransitionID.Skill_To_Idle, data);
 			}
 			//=============================測試用=============================
@@ -591,7 +591,7 @@ public class FSMIdleState : FSMBaseState{
 						}
 						Debug.Log ("======================NPC："+nComponent.m_AIData.fHP);
 						if(nComponent.m_AIData.fHP == 0.0f){
-							ObjectPool.m_Instance.UnLoadObjectToPool(iSlotFSM, data.targetPoint.gameObject);
+							ObjectPool.m_Instance.UnLoadObjectToPool(out iSlotFSM, data.targetPoint.gameObject);
 							//return;
 							//回到idle狀態
 							//data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);

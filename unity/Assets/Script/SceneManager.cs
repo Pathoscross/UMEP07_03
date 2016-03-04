@@ -19,8 +19,11 @@ public class SceneManager : MonoBehaviour {
 
 	//要被管理的prefabs
 	public Object m_Player;
+	public Object m_Player2;
 	public float fPlayerZ;
 	public Object m_Enemy;
+	GameObject go;
+	Vector3 pos;
 	int iPlayerCount = 0;
 	public int m_iPlayerCount(){ return iPlayerCount; }
 	int iEnemyCount = 0;
@@ -61,27 +64,29 @@ public class SceneManager : MonoBehaviour {
 
 		//生成Prefab
 		//玩家prefabs生成，從外部傳遞id，if = 1 ，生成哪個prefabs，下略
-		iPlayerCount = 0;
-		for (int i=0; i<1; i++) {
-			ObjectPool.m_Instance.InitObjectsInPool (m_Player, 1);
-			iPlayerCount += 1;
+		iPlayerCount = 2;
+		m_EnemyTarget = new GameObject[iPlayerCount];
+		//ObjectPool.m_Instance.InitObjectsInPool (m_Player, 1);
+		//ObjectPool.m_Instance.InitObjectsInPool (m_Player2, 1);
+		for (int i=0; i<iPlayerCount; i++) {
+			if (i == 0){ go = ObjectPool.m_Instance.InitObjectsInPool (m_Player, 1); }
+			if (i == 1){ go = ObjectPool.m_Instance.InitObjectsInPool (m_Player2, 1); }
+			m_EnemyTarget [i] = go;
 		}
 		//玩家Prefab
 		//int iCount = ObjectPool.m_Instance.m_GameObjects [0].Count;
-		m_EnemyTarget = new GameObject[iPlayerCount];
-		for (int i=0; i<iPlayerCount; i++) {
-			GameObject go = ObjectPool.m_Instance.LoadObjectFromPool (i);
+		//for (int i=0; i<iPlayerCount; i++) {
+			go = ObjectPool.m_Instance.LoadObjectFromPool (0);
 			//到時直接安排位置，不用Random
-			Vector3 pos = Vector3.zero;
+			pos = Vector3.zero;
 			pos.x = 130.0f;
 			pos.y = 0.0f;
 			pos.z = 45.0f;
 			fPlayerZ = pos.z;
 			go.transform.position = pos;
-			m_EnemyTarget [i] = go;
 			//Vector3.right指向-x，left指向x
 			go.transform.forward = Vector3.right;
-		}
+		//}
 
 		//生成敵人Prefab
 		iEnemyCount = 0;
@@ -92,9 +97,9 @@ public class SceneManager : MonoBehaviour {
 		m_Target = new GameObject[iEnemyCount];
 		for (int i=0; i<iEnemyCount; i++) {
 			Debug.Log("敵人的"+i);
-			GameObject go = ObjectPool.m_Instance.LoadObjectFromPool (i+iPlayerCount);
+			go = ObjectPool.m_Instance.LoadObjectFromPool (i+iPlayerCount);
 			//到時直接安排位置，不用Random
-			Vector3 pos = Vector3.zero;
+			pos = Vector3.zero;
 			int j = Random.Range(1, 3);
 			if(j == 1){
 				pos.z = 60.0f;
@@ -112,8 +117,6 @@ public class SceneManager : MonoBehaviour {
 			go.transform.position = pos;
 			go.transform.forward = Vector3.left;
 		}
-		GameObject goTest = ObjectPool.m_Instance.FindNowPlayer ();
-		Debug.Log ("目前的玩家物件名稱："+goTest.gameObject.name);
 	}
 
 	// Use this for initialization
@@ -130,7 +133,17 @@ public class SceneManager : MonoBehaviour {
 		//2.如果bWinOrLose = true，判斷
 		////1.如果bWinOrLose = true，勝利
 		////2.如果bWinOrLose = false，失敗
+		if(Input.GetKey(KeyCode.W)){
+			int iSlot = -1;
+			GameObject goTest = ObjectPool.m_Instance.FindNowPlayer ();
+			Debug.Log ("目前的玩家物件名稱："+goTest.gameObject.name);
+			pos = goTest.gameObject.transform.position;
+			ObjectPool.m_Instance.UnLoadObjectToPool(out iSlot, goTest.gameObject);
+			go = ObjectPool.m_Instance.LoadObjectFromPool (1);
+			go.transform.position = pos;
+		}
 	}
+
 	/*
 	//WayPoint
 	void OnDrawGizmos() {

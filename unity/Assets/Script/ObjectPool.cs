@@ -61,17 +61,18 @@ public class ObjectPool : MonoBehaviour {
 		}
 	}
 	
-	public int InitObjectsInPool(Object obj, int iCount)
+	public GameObject InitObjectsInPool(Object obj, int iCount)
 	{
 		int iSlot = FindEmptySlot();
+		GameObject go = null;
 		// Not found, return or resize buffer.
 		if(iSlot < 0) {
-			return -1;	
+			return go;	
 		}
 		m_iCount = iCount;
 		m_GameObjects[iSlot] = new List<ObjectPoolData>();
 		for(int i = 0; i < iCount; i++) {
-			GameObject go = Instantiate(obj) as GameObject;
+			go = Instantiate(obj) as GameObject;
 			if(go == null) {
 				break;
 			}
@@ -83,7 +84,7 @@ public class ObjectPool : MonoBehaviour {
 			//將第iSlot的m_GameObjects，增加一個建立的物件
 			m_GameObjects[iSlot].Add(objData);
 		}
-		return iSlot;
+		return go;
 	}
 	
 	public GameObject LoadObjectFromPool(int iSlot)
@@ -112,15 +113,33 @@ public class ObjectPool : MonoBehaviour {
 		return go;
 	}
 	
-	public bool UnLoadObjectToPool(int iSlot, GameObject go)
+	public bool UnLoadObjectToPool(out int ioutSlotOP, GameObject go)
 	{
-		if(iSlot < 0 || iSlot >= m_iNumGameObjectInType) {
-			return false;	
-		}
+		//if(iSlot < 0 || iSlot >= m_iNumGameObjectInType) {
+		//	return false;	
+		//}
+		int iSlot = m_GameObjects.Length;
+		int iOut = -1;
 		bool bRet = false;
-		int iCount = m_GameObjects[iSlot].Count;
-		
 		//找出該物件原本的位置，然後關掉他
+		for (int i = 0; i < iSlot; i++) {
+			if (m_GameObjects [i] != null) {
+				int iCount = m_GameObjects [i].Count;
+				Debug.Log ("m_GameObjects[iSlot]" + iCount);
+				for (int j = 0; j < iCount; j++) {
+					ObjectPoolData objData = m_GameObjects [i] [j];
+					if (objData.m_go == go) {
+						iOut = i;
+						ioutSlotOP = iOut;
+						objData.m_bUsing = false;
+						EnableModel(go, false);
+						bRet = true;
+						break;
+					}
+				}
+			}
+		}
+		/*
 		for(int i = 0; i < iCount; i++) {
 			ObjectPoolData objData = m_GameObjects[iSlot][i];
 			if(objData.m_go == go) {
@@ -133,6 +152,8 @@ public class ObjectPool : MonoBehaviour {
 				break;
 			}
 		}
+		*/
+		ioutSlotOP = iOut;
 		return bRet;
 	}
 
