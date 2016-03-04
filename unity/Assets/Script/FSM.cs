@@ -612,6 +612,8 @@ public class FSMIdleState : FSMBaseState{
 					AIBehavior.MoveForward (data.thisPoint, data);
 				}
 			} else if (iHit == 1) {
+				peoplego.m_Instance.iNowEgo = peoplego.eEgo.Run;
+				Debug.Log("動作測試============================================="+peoplego.m_Instance.iNowEgo);
 				Debug.Log ("移動到目的地中");
 				Debug.Log (data.thisPoint.transform.position);
 				data.thisPosition = data.thisPoint.transform.position;
