@@ -4,41 +4,35 @@ using System.Collections;
 public class UI_MonisterBarBasic : MonoBehaviour {
 
 	public UI_VitalBar vb;
-	//GameObject m_NowPlayer;
-	//Player pComponent;
-	GameObject m_NowPlayerTarget;
-	NPC nComponent;
-	public float curValue;
-	public float maxValue;
+	public GameObject m_GO = null;
+	public UILabel label_Name;
+	public float fHPValue;
+	public float fMaxHPValue;
 	
 	public bool displayText = true;
 	public bool display = false;
 
 	void Start() {
 		UpdateVitalBar();
-		//m_NowPlayer = ObjectPool.m_Instance.FindNowPlayer ();
-		//pComponent = m_NowPlayer.GetComponent <Player> ();
+		if (m_GO != null) {
+			label_Name.text = m_GO.GetComponent<NPC> ().sName;
+		}
 	}
 	
 	void Update () {
-		if (SceneManager.m_Instance.pComponent.m_AIData.targetPoint != null) {
-			m_NowPlayerTarget = SceneManager.m_Instance.pComponent.m_AIData.targetPoint;
-			nComponent = m_NowPlayerTarget.GetComponent <NPC> ();
-			maxValue = nComponent.m_AIData.fMaxHP;
-			curValue = nComponent.m_AIData.fHP;
-			if (curValue < 0.0f) {
-				curValue = 0.0f;
-			}
+		if (m_GO != null) {
+			fMaxHPValue = m_GO.GetComponent<NPC> ().fMaxHP;
+			fHPValue = m_GO.GetComponent<NPC> ().fHP;
+			if (fHPValue < 0.0f) { fHPValue = 0.0f; }
 			UpdateVitalBar ();
 		}
 	}
 	
 	void UpdateVitalBar() {
 		if (!displayText) {
-			vb.UpdateDisplay((float)(curValue / maxValue));
-		}
-		else {
-			vb.UpdateDisplay((float)(curValue / maxValue), curValue + "/" + maxValue);
+			vb.UpdateDisplay((float)(fHPValue / fMaxHPValue));
+		} else {
+			vb.UpdateDisplay((float)(fHPValue / fMaxHPValue), fHPValue + "/" + fMaxHPValue);
 		}
 	}
 }

@@ -11,7 +11,11 @@ public class UI_FloatingBar : MonoBehaviour {
 		//呼叫VitalBar，然後實體化
 		VitalBar = Resources.Load("Monster_VitalBar") as GameObject;
 		InsVitalBar = Instantiate (VitalBar) as GameObject;
+		//血槽
+		InsVitalBar.GetComponent<UI_MonisterBarBasic> ().m_GO = gameObject.transform.parent.gameObject;
 	}
+
+
 
 	public void LateUpdate() {
 		worldCamera = NGUITools.FindCameraForLayer(this.gameObject.layer);//頭頂物件
