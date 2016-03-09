@@ -301,6 +301,7 @@ public class AIBehavior{
 		return false;
 	}
 
+	//敵人尋找目前玩家目標
 	public static GameObject CheckPlayer(AIData data, out float fOutMinDist, out int ioutSlotAI){ //(裡面回傳距離，判定距離過小時直接進行攻擊等等)
 		
 		GameObject [] gos = SceneManager.m_Instance.m_EnemyTarget;
@@ -315,7 +316,6 @@ public class AIBehavior{
 		int iLength = SceneManager.m_Instance.m_EnemyTarget.Length;
 		for (int i=0; i<iLength; i++) {
 			tPos = gos [i].transform.position;
-			tPos.z = data.thisPositionZ;
 			tVec = tPos - data.thisPoint.gameObject.transform.position;
 			fDist = tVec.magnitude;
 			bUsing = ObjectPool.m_Instance.FindObjectToPool (out ioutSlotAI, gos [i].gameObject);
@@ -331,5 +331,22 @@ public class AIBehavior{
 		//ioutTarget = iTarget;
 		fOutMinDist = fMinDist;
 		return go;
+	}
+
+	//目前控制的玩家角色
+	public static void PlayerControl(){
+		GameObject go = ObjectPool.m_Instance.FindNowPlayer ();
+		if (Input.GetKey ("down")||Input.GetKey (KeyCode.S)){
+			go.transform.position -= go.transform.forward * Time.deltaTime*5.0f; 
+		}
+		if (Input.GetKey ("up")||Input.GetKey (KeyCode.W)){
+			go.transform.position += go.transform.forward * Time.deltaTime*5.0f; 
+		}
+		if (Input.GetKey ("left")||Input.GetKey (KeyCode.A)){
+			go.transform.Rotate(0,-180*Time.deltaTime,0);
+		}
+		if (Input.GetKey ("right")||Input.GetKey (KeyCode.D)){
+			go.transform.Rotate(0,180*Time.deltaTime,0);
+		}
 	}
 }

@@ -205,14 +205,11 @@ public class FSMNpcIdleState : FSMBaseState{
 	//因為是複寫的，所以是override
 	public override void CheckState (AIData data){
 		if(fTime > fIdleTime){
-			//fTime = 0.0f;
 			data.m_State.PerformTransition(eTransitionID.Idle_To_Track, data);
 		}
 	}
 	
 	public override void DoState (AIData data){
-		Debug.Log ("fTime："+fTime);
-		Debug.Log ("fIdleTime："+fIdleTime);
 		Debug.Log (data.thisPoint+"目前狀態：" + m_StateID);
 		fTime += Time.deltaTime;
 	}
@@ -237,6 +234,7 @@ public class FSMNpcTrackState : FSMBaseState{
 		data.targetPoint = null;
 		fTime = 0.0f;
 		fTrackTime = 2.0f;
+		data.iAstarIndex = -1;
 	}
 	
 	//因為是複寫的，所以是override
@@ -250,7 +248,7 @@ public class FSMNpcTrackState : FSMBaseState{
 			data.targetPosition = data.targetPoint.transform.position;
 			//if (fDist < data.fDetectLength) { //距離小於可視範圍
 			//	data.m_State.PerformTransition (eTransitionID.Track_To_Chase, data);
-			//} else
+			//} else 
 			if (fDist < data.fAttackLength) { //距離小於攻擊範圍
 				if (data.fMP > data.fSkillMP) {
 					//=============================技能進入機率=============================
@@ -269,13 +267,13 @@ public class FSMNpcTrackState : FSMBaseState{
 	}
 	
 	public override void DoState (AIData data){
-		Debug.Log ("前往目標");
+		//Debug.Log ("前往目標");
 		m_GameObject = data.thisPoint;
 		nComponent = m_GameObject.GetComponent<NPC> ();
 		//如果沒有小於攻擊範圍，就追逐
 		if (data.iAstarIndex > -1) {
-			Debug.Log ("iAstarIndex" + data.iAstarIndex);
-			Debug.Log ("GetPathPointNumber" + (nComponent.m_AStar.GetPathPointNumber () - 1));
+			//Debug.Log ("iAstarIndex" + data.iAstarIndex);
+			//Debug.Log ("GetPathPointNumber" + (nComponent.m_AStar.GetPathPointNumber () - 1));
 			if (data.iAstarIndex < (nComponent.m_AStar.GetPathPointNumber () - 1)) {
 				//多久做一次找seek點，會影響效能
 				//Debug.Log ("多久做一次找seek點，會影響效能");
@@ -290,7 +288,6 @@ public class FSMNpcTrackState : FSMBaseState{
 			}
 			AIBehavior.MoveForward (data.thisPoint, data);
 			//一定時間重新計算目標
-			
 			if (fTime > fTrackTime) {
 				data.targetPoint = null; //把目標清掉
 				data.iAstarIndex = -1;
@@ -336,7 +333,7 @@ public class FSMNpcAttackState : FSMBaseState{
 		tVec.Normalize();
 		data.thisPoint.transform.forward = tVec;
 		fTime = 0.0f;
-		fAttackTime = 1.0f;
+		fAttackTime = 0.5f;
 	}
 	
 	//因為是複寫的，所以是override
@@ -344,6 +341,7 @@ public class FSMNpcAttackState : FSMBaseState{
 		fDist = 10000.0f;
 		iSlotFSM = -1;
 		data.targetPoint = AIBehavior.CheckPlayer (data, out fDist, out iSlotFSM);
+		Debug.Log ("==========================目前距離："+fDist);
 		if (data.targetPoint != null) {
 			//m_AIData.targetAIData = m_AIData.targetPoint;
 			if (fDist >= data.fAttackLength) { //如果距離大於攻擊範圍，切到追逐狀態
@@ -373,14 +371,14 @@ public class FSMNpcAttackState : FSMBaseState{
 			pComponent.m_AIData.fHP -= data.fAttack;
 			data.fMP += 5.0f;
 			//============================攻擊紀錄============================
-			Debug.Log (data.thisPoint + "===普通攻擊擊中===" + m_pGameObject);
-			Debug.Log (m_pGameObject + "===被普通攻擊===" + data.fAttack + "===擊中後的血量===" + pComponent.m_AIData.fHP);
+			//Debug.Log (data.thisPoint + "===普通攻擊擊中===" + m_pGameObject);
+			//Debug.Log (m_pGameObject + "===被普通攻擊===" + data.fAttack + "===擊中後的血量===" + pComponent.m_AIData.fHP);
 			//============================完============================
 			//=============================防呆=============================
 			if (pComponent.m_AIData.fHP <= 0) { pComponent.m_AIData.fHP = 0; }
 			if (data.fMP >= data.fMaxMP) { data.fMP = data.fMaxMP; }
 			//=============================完=============================
-			Debug.Log (pComponent.m_AIData.fHP);
+			//Debug.Log (pComponent.m_AIData.fHP);
 			if (pComponent.m_AIData.fHP == 0.0f) {
 				ObjectPool.m_Instance.UnLoadObjectToPool (out iSlotFSM, data.targetPoint.gameObject);
 				data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
@@ -427,6 +425,7 @@ public class FSMNpcSkillState : FSMBaseState{
 		fDist = 10000.0f;
 		iSlotFSM = -1;
 		data.targetPoint = AIBehavior.CheckPlayer (data, out fDist, out iSlotFSM);
+		Debug.Log ("==========================目前距離："+fDist);
 		if (data.targetPoint != null) {
 			//m_AIData.targetAIData = m_AIData.targetPoint;
 			if (fDist >= data.fAttackLength) { //如果距離大於攻擊範圍，切到追逐狀態
@@ -456,13 +455,13 @@ public class FSMNpcSkillState : FSMBaseState{
 			pComponent.m_AIData.fHP -= data.fSkill;
 			data.fMP -= data.fSkillMP;
 			//============================攻擊紀錄============================
-			Debug.Log (data.thisPoint + "===技能攻擊擊中===" + m_pGameObject);
-			Debug.Log (m_pGameObject + "===被技能攻擊===" + data.fSkill + "===擊中後的血量===" + pComponent.m_AIData.fHP);
+			//Debug.Log (data.thisPoint + "===技能攻擊擊中===" + m_pGameObject);
+			//Debug.Log (m_pGameObject + "===被技能攻擊===" + data.fSkill + "===擊中後的血量===" + pComponent.m_AIData.fHP);
 			//=============================完=============================
 			//=============================防呆=============================
 			if (pComponent.m_AIData.fHP <= 0) { pComponent.m_AIData.fHP = 0; }
 			//=============================完=============================
-			Debug.Log (pComponent.m_AIData.fHP);
+			//Debug.Log (pComponent.m_AIData.fHP);
 			if (pComponent.m_AIData.fHP == 0.0f) {
 				Debug.Log (data.thisPoint + "===攻擊目標===" + data.targetPoint.gameObject + "===死亡===");
 				ObjectPool.m_Instance.UnLoadObjectToPool (out iSlotFSM, data.targetPoint.gameObject);
@@ -549,29 +548,27 @@ public class FSMIdleState : FSMBaseState{
 	
 	//因為是複寫的，所以是override
 	public override void CheckState (AIData data){
-		Debug.Log ("bWinOrLose："+SceneManager.m_Instance.bWinOrLose);
-		if (SceneManager.m_Instance.bEnd == false) {
-			if (Input.GetMouseButtonDown (0)) {
-				bTest = false;
-				Ray r = Camera.main.ScreenPointToRay (Input.mousePosition);
-				RaycastHit rHit;
-				if (Physics.Raycast (r, out rHit, 100000.0f, 1 << LayerMask.NameToLayer ("Enemy"))) {
-					if (rHit.collider.gameObject.layer == 10) {//10是Enemy的Layer
-						iHit = 0;
-						data.targetPoint = rHit.collider.gameObject;
-						data.targetPosition = data.targetPoint.gameObject.transform.position;
-						tVec = data.targetPosition - data.thisPoint.gameObject.transform.position;
-						data.thisPoint.gameObject.transform.forward = tVec;
-
-					} 
-				} else if (Physics.Raycast (r, out rHit, 100000.0f, 1 << LayerMask.NameToLayer ("Terrain"))) {
-					iHit = 1;
-					data.targetPosition = rHit.point;
+		if (Input.GetMouseButtonDown (0)) {
+			bTest = false;
+			Ray r = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit rHit;
+			if (Physics.Raycast (r, out rHit, 100000.0f, 1 << LayerMask.NameToLayer ("Enemy"))) {
+				if (rHit.collider.gameObject.layer == 10) {//10是Enemy的Layer
+					iHit = 0;
+					data.targetPoint = rHit.collider.gameObject;
+					data.targetPosition = data.targetPoint.gameObject.transform.position;
 					tVec = data.targetPosition - data.thisPoint.gameObject.transform.position;
 					data.thisPoint.gameObject.transform.forward = tVec;
-					Debug.Log (data.targetPosition);
-				}
-			}
+
+				} 
+			}/* else if (Physics.Raycast (r, out rHit, 100000.0f, 1 << LayerMask.NameToLayer ("Terrain"))) {
+				iHit = 1;
+				data.targetPoint = null;
+				data.targetPosition = rHit.point;
+				tVec = data.targetPosition - data.thisPoint.gameObject.transform.position;
+				data.thisPoint.gameObject.transform.forward = tVec;
+				//Debug.Log (data.targetPosition);
+			}*/
 		}
 	}
 	
@@ -581,6 +578,11 @@ public class FSMIdleState : FSMBaseState{
 		pComponent = m_GameObject.GetComponent<Player>();
 		if (bTest == false && vForward == Vector3.zero) {
 			if (iHit == 0) {
+				//選擇攻擊
+					//不在攻擊範圍，移動
+					//在攻擊範圍，攻擊
+				//選擇技能
+					//直接放技能，依照範圍判定有被傷害的目標
 				pComponent.iNowEgo = Player.eEgo.Run;
 				iSlotFSM = -1;
 				Debug.Log ("移動到目標中");
@@ -603,16 +605,15 @@ public class FSMIdleState : FSMBaseState{
 						if(nComponent.m_AIData.fHP <= 0){
 							nComponent.m_AIData.fHP = 0;
 						}
-						Debug.Log ("======================NPC："+nComponent.m_AIData.fHP);
 						if(nComponent.m_AIData.fHP == 0.0f){
 							ObjectPool.m_Instance.UnLoadObjectToPool(out iSlotFSM, data.targetPoint.gameObject);
+							data.targetPoint = null;
 							//return;
 							//回到idle狀態
 							//data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
 						}
 						iHit = -1;
 						pComponent.iNowEgo = Player.eEgo.Idle;
-						data.targetPoint = null;
 						//data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
 					}
 					fTime += Time.deltaTime;
@@ -627,7 +628,11 @@ public class FSMIdleState : FSMBaseState{
 					}
 					AIBehavior.MoveForward (data.thisPoint, data);
 				}
-			} else if (iHit == 1) {
+			}
+			//選擇技能
+				//直接放技能，依照範圍判定有被傷害的目標
+			//
+			/* else if (iHit == 1) {
 				pComponent.iNowEgo = Player.eEgo.Run;
 				//Player.m_Instance.iNowEgo = Player.eEgo.Run;
 				Debug.Log ("移動到目的地中");
@@ -641,7 +646,7 @@ public class FSMIdleState : FSMBaseState{
 					}
 				}
 				AIBehavior.MoveForward (data.thisPoint, data);
-			}
+			}*/
 		}
 		//bTest = false;
 		return;

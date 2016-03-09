@@ -30,7 +30,10 @@ public class SceneManager : MonoBehaviour {
 	int iAllEnemyCount = 0;
 	NPC nComponent = null;
 
-	//遊戲輸贏判斷
+	//遊戲判斷
+	public GameObject m_NowPlayer;
+	public Player pComponent;
+	public GameObject m_MoniterVitalBar;
 	public bool bEnd = false;
 	public bool bWinOrLose = false;
 
@@ -80,7 +83,7 @@ public class SceneManager : MonoBehaviour {
 		pos.z = 0.0f;
 		go.transform.position = pos;
 		//Vector3.right指向-x，left指向x
-		go.transform.forward = Vector3.right;
+		//go.transform.forward = Vector3.right;
 		//}
 
 		//生成敵人Prefab
@@ -113,6 +116,14 @@ public class SceneManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		m_NowPlayer = ObjectPool.m_Instance.FindNowPlayer ();
+		pComponent = m_NowPlayer.GetComponent <Player> ();
+		//if (pComponent.m_AIData.targetPoint != null) {
+			//m_MoniterVitalBar.SetActive (true);
+		//} else {
+			//m_MoniterVitalBar.SetActive(false);
+		//}
+		AIBehavior.PlayerControl ();
 		//1.如果敵人全滅
 			//bEnd = true
 			//bWinOrLose = true
@@ -121,7 +132,7 @@ public class SceneManager : MonoBehaviour {
 		//2.如果bWinOrLose = true，判斷
 		////1.如果bWinOrLose = true，勝利
 		////2.如果bWinOrLose = false，失敗
-		if(Input.GetKey(KeyCode.W)){
+		if(Input.GetKey(KeyCode.G)){
 			int iSlot = -1;
 			GameObject goTest = ObjectPool.m_Instance.FindNowPlayer ();
 			Debug.Log ("目前的玩家物件名稱："+goTest.gameObject.name);
@@ -132,7 +143,7 @@ public class SceneManager : MonoBehaviour {
 		}
 	}
 
-	/*
+
 	//WayPoint
 	void OnDrawGizmos() {
 		if (m_WayPoint == null) {
@@ -155,5 +166,4 @@ public class SceneManager : MonoBehaviour {
 			}
 		}
 	}
-	*/
 }

@@ -12,6 +12,11 @@ public class NPC : MonoBehaviour {
 	public AStar m_AStar;
 	//FSM
 	private FSMManager m_FSMManager;
+	//需要外讀的資料
+	public float fHP = 20.0f;
+	public float fMP = 50.0f;
+	public float fMaxHP = 20.0f;
+	public float fMaxMP = 50.0f;
 
 	void Awake(){
 		m_Instance = this;
@@ -35,15 +40,15 @@ public class NPC : MonoBehaviour {
 		m_AIData.fRadius = 1.0f;
 		m_AIData.iAstarIndex = -1;
 		m_AIData.targetPosition = Vector3.zero;
-		m_AIData.fDetectLength = 20.0f;
-		m_AIData.fAttackLength = 10.0f;
-		m_AIData.fHP = 50.0f;
-		m_AIData.fMP = 50.0f;
-		m_AIData.fMaxHP = 20.0f;
-		m_AIData.fMaxMP = 50.0f;
+		m_AIData.fDetectLength = 10.0f;
+		m_AIData.fAttackLength = 5.0f;
 		m_AIData.fAttack = 10.0f;
 		m_AIData.fSkill = 30.0f;
 		m_AIData.fSkillMP = 20.0f;
+		m_AIData.fHP = fHP;
+		m_AIData.fMP = fMP;
+		m_AIData.fMaxHP = fMaxHP;
+		m_AIData.fMaxMP = fMaxMP;
 		/*
 			生成隊長時呼叫自己的小兵，並傳入變數給小兵，指派他的隊長
 		*/

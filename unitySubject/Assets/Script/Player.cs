@@ -28,6 +28,9 @@ public class Player : MonoBehaviour {
 	}
 	public eEgo iNowEgo = eEgo.None;
 	//=============================完=============================
+	//其他
+	public Transform lookAtObj;
+
 	void Awake(){
 		m_Instance = this;
 		iNowEgo = eEgo.Idle;
@@ -47,37 +50,18 @@ public class Player : MonoBehaviour {
 		m_AIData.fRadius = 0.5f;
 		m_AIData.iAstarIndex = -1;
 		m_AIData.targetPosition = Vector3.zero;
-		m_AIData.fDetectLength = 20.0f;
-		m_AIData.fAttackLength = 10.0f;
+		m_AIData.fDetectLength = 10.0f;
+		m_AIData.fAttackLength = 5.0f;
 		m_AIData.fHP = 100.0f;
+		m_AIData.fMaxHP = 100.0f;
 		m_AIData.fMP = 30.0f;
+		m_AIData.fMaxMP = 30.0f;
 		m_AIData.fAttack = 10.0f;
 		m_AIData.fSkill = 30.0f;
 		//FSM的設定
 		m_FSMManager = new FSMManager ();
 		FSMIdleState IdleState = new FSMIdleState ();
-		//FSMTrackState TrackState = new FSMTrackState ();
-		//FSMChaseState ChaseState = new FSMChaseState ();
-		//FSMAttackState AttackState = new FSMAttackState ();
-		//FSMWanderState WanderState = new FSMWanderState ();
-		//IdleState.AddTransition (eTransitionID.Idle_To_Track, eStateID.Track);
-		//IdleState.AddTransition (eTransitionID.Idle_To_Chase, eStateID.Chase);
-		//IdleState.AddTransition (eTransitionID.Idle_To_Attack, eStateID.Attack);
-		//IdleState.AddTransition (eTransitionID.Idle_To_Wander, eStateID.Wander);
-		//TrackState.AddTransition (eTransitionID.Track_To_Idle, eStateID.Idle);
-		//TrackState.AddTransition (eTransitionID.Track_To_Chase, eStateID.Chase);
-		//TrackState.AddTransition (eTransitionID.Track_To_Attack, eStateID.Attack);
-		//TrackState.AddTransition (eTransitionID.Track_To_Wander, eStateID.Wander);
-		//ChaseState.AddTransition (eTransitionID.Chase_To_Attack, eStateID.Attack);
-		//ChaseState.AddTransition (eTransitionID.Chase_To_Idle, eStateID.Idle);
-		//AttackState.AddTransition (eTransitionID.Attack_To_Idle, eStateID.Idle);
-		//AttackState.AddTransition (eTransitionID.Attack_To_Chase, eStateID.Chase);
-		//WanderState.AddTransition (eTransitionID.Wander_To_Idle, eStateID.Idle);
 		m_FSMManager.AddState (IdleState);
-		//m_FSMManager.AddState (TrackState);
-		//m_FSMManager.AddState (ChaseState);
-		//m_FSMManager.AddState (AttackState);
-		//m_FSMManager.AddState (WanderState);
 		m_AIData.m_State = m_FSMManager;
 	}
 	
