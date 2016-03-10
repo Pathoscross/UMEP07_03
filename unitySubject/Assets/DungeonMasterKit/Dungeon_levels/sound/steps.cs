@@ -11,12 +11,12 @@ public float Speed;
 			{
 				if(controller.isGrounded && controller.velocity.magnitude > 2)
 			{
-					audio.PlayOneShot(Shagi[Random.Range(0, Shagi.Length)], 0.5F);
+					GetComponent<AudioSource>().PlayOneShot(Shagi[Random.Range(0, Shagi.Length)], 0.5F);
 					yield return new WaitForSeconds(Speed);
 			}
 				if(controller.isGrounded && controller.velocity.magnitude < 2)
 			{
-					audio.PlayOneShot(ohhahh[Random.Range(0, ohhahh.Length)], 0.5F);
+					GetComponent<AudioSource>().PlayOneShot(ohhahh[Random.Range(0, ohhahh.Length)], 0.5F);
 					yield return new WaitForSeconds(Speed);
 			}
 				else

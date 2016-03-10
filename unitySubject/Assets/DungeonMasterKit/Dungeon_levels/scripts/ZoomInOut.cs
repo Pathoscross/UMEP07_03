@@ -12,14 +12,14 @@ public class ZoomInOut : MonoBehaviour
 	
     void  Start ()
     {
-       distance = camera.fieldOfView;
+       distance = GetComponent<Camera>().fieldOfView;
     }
     void  Update ()
     {
 		
        distance -= Input.GetAxis("Mouse ScrollWheel") * sensitivityDistance;
        distance = Mathf.Clamp(distance, minFOV, maxFOV);
-       camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, distance,  Time.deltaTime * damping);
+       GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, distance,  Time.deltaTime * damping);
     }
 	
 	///===================================
