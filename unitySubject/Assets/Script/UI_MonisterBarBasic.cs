@@ -21,8 +21,8 @@ public class UI_MonisterBarBasic : MonoBehaviour {
 	
 	void Update () {
 		if (m_GO != null) {
-			fMaxHPValue = m_GO.GetComponent<NPC> ().fMaxHP;
-			fHPValue = m_GO.GetComponent<NPC> ().fHP;
+			fMaxHPValue = m_GO.GetComponent<NPC> ().m_AIData.fMaxHP;
+			fHPValue = m_GO.GetComponent<NPC> ().m_AIData.fHP;
 			if (fHPValue < 0.0f) { fHPValue = 0.0f; }
 			UpdateVitalBar ();
 		}

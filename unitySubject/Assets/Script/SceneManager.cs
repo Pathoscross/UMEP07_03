@@ -107,6 +107,9 @@ public class SceneManager : MonoBehaviour {
 			//存物件到ObjectPool
 			go.transform.position = pos;
 			go.transform.forward = Vector3.left;
+			//目前玩家
+			m_NowPlayer = ObjectPool.m_Instance.FindNowPlayer ();
+			pComponent = m_NowPlayer.GetComponent <Player> ();
 		}
 	}
 
@@ -116,8 +119,6 @@ public class SceneManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		m_NowPlayer = ObjectPool.m_Instance.FindNowPlayer ();
-		pComponent = m_NowPlayer.GetComponent <Player> ();
 		//if (pComponent.m_AIData.targetPoint != null) {
 			//m_MoniterVitalBar.SetActive (true);
 		//} else {
@@ -133,6 +134,7 @@ public class SceneManager : MonoBehaviour {
 		////1.如果bWinOrLose = true，勝利
 		////2.如果bWinOrLose = false，失敗
 		if(Input.GetKey(KeyCode.G)){
+			//記得之後要改變m_NowPlayer
 			int iSlot = -1;
 			GameObject goTest = ObjectPool.m_Instance.FindNowPlayer ();
 			Debug.Log ("目前的玩家物件名稱："+goTest.gameObject.name);

@@ -24,6 +24,7 @@ public class AIData{
 	public int iAstarIndex; //目前seek到的Astar是第幾個點
 	public float thisPositionZ; //自己位置的Z軸
 
+	public int iLV; //目前seek到的Astar是第幾個點
 	public float fDetectLength; //可視範圍長度
 	public float fAttackLength; //攻擊範圍長度
 	public float fHP = 0.0f; //生命值

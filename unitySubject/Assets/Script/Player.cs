@@ -28,8 +28,12 @@ public class Player : MonoBehaviour {
 	}
 	public eEgo iNowEgo = eEgo.None;
 	//=============================完=============================
-	//其他
-	public Transform lookAtObj;
+	//需要外讀的資料
+	public string sName = "我是玩家喔";
+	public float fHP = 100.0f;
+	public float fMP = 50.0f;
+	public float fMaxHP = 100.0f;
+	public float fMaxMP = 50.0f;
 
 	void Awake(){
 		m_Instance = this;
@@ -52,12 +56,13 @@ public class Player : MonoBehaviour {
 		m_AIData.targetPosition = Vector3.zero;
 		m_AIData.fDetectLength = 10.0f;
 		m_AIData.fAttackLength = 5.0f;
-		m_AIData.fHP = 100.0f;
-		m_AIData.fMaxHP = 100.0f;
-		m_AIData.fMP = 30.0f;
-		m_AIData.fMaxMP = 30.0f;
 		m_AIData.fAttack = 10.0f;
 		m_AIData.fSkill = 30.0f;
+		m_AIData.iLV = 1;
+		m_AIData.fHP = fHP;
+		m_AIData.fMP = fMP;
+		m_AIData.fMaxHP = fMaxHP;
+		m_AIData.fMaxMP = fMaxMP;
 		//FSM的設定
 		m_FSMManager = new FSMManager ();
 		FSMIdleState IdleState = new FSMIdleState ();
