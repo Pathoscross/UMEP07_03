@@ -24,7 +24,7 @@ public class AIData{
 	public int iAstarIndex; //目前seek到的Astar是第幾個點
 	public float thisPositionZ; //自己位置的Z軸
 
-	public int iLV; //目前seek到的Astar是第幾個點
+	public int iLV = 0;
 	public float fDetectLength; //可視範圍長度
 	public float fAttackLength; //攻擊範圍長度
 	public float fHP = 0.0f; //生命值
@@ -332,22 +332,5 @@ public class AIBehavior{
 		//ioutTarget = iTarget;
 		fOutMinDist = fMinDist;
 		return go;
-	}
-
-	//目前控制的玩家角色
-	public static void PlayerControl(){
-		GameObject go = ObjectPool.m_Instance.FindNowPlayer ();
-		if (Input.GetKey ("down")||Input.GetKey (KeyCode.S)){
-			go.transform.position -= go.transform.forward * Time.deltaTime*5.0f; 
-		}
-		if (Input.GetKey ("up")||Input.GetKey (KeyCode.W)){
-			go.transform.position += go.transform.forward * Time.deltaTime*5.0f; 
-		}
-		if (Input.GetKey ("left")||Input.GetKey (KeyCode.A)){
-			go.transform.Rotate(0,-180*Time.deltaTime,0);
-		}
-		if (Input.GetKey ("right")||Input.GetKey (KeyCode.D)){
-			go.transform.Rotate(0,180*Time.deltaTime,0);
-		}
 	}
 }

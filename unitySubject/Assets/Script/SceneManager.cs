@@ -107,7 +107,8 @@ public class SceneManager : MonoBehaviour {
 			//存物件到ObjectPool
 			go.transform.position = pos;
 			go.transform.forward = Vector3.left;
-			//目前玩家
+			//目前玩家==================================
+			//到時要改成實體第一個玩家時將資料輸進m_NowPlayer，切換玩家時改變m_NowPlayer
 			m_NowPlayer = ObjectPool.m_Instance.FindNowPlayer ();
 			pComponent = m_NowPlayer.GetComponent <Player> ();
 		}
@@ -115,6 +116,7 @@ public class SceneManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		Debug.Log ("=================================pComponent.m_AIData.iLV"+pComponent.m_AIData.iLV);
 	}
 	
 	// Update is called once per frame
@@ -124,7 +126,6 @@ public class SceneManager : MonoBehaviour {
 		//} else {
 			//m_MoniterVitalBar.SetActive(false);
 		//}
-		AIBehavior.PlayerControl ();
 		//1.如果敵人全滅
 			//bEnd = true
 			//bWinOrLose = true

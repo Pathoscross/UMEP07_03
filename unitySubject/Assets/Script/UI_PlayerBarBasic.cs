@@ -11,13 +11,15 @@ public class UI_PlayerBarBasic : MonoBehaviour {
 	public float MaxHPValue;
 	public float MPcurValue;
 	public float MaxMPValue;
+	int iLV;
 	
 	public bool displayText = true;
 	
 	void Start() {
 		UpdateVitalBar();
 		label_Name.text = SceneManager.m_Instance.pComponent.sName;
-		label_LV.text = "LV."+SceneManager.m_Instance.pComponent.m_AIData.iLV;
+		iLV = SceneManager.m_Instance.pComponent.m_AIData.iLV;
+		label_LV.text = "LV." + iLV.ToString();
 	}
 
 	void Update () {

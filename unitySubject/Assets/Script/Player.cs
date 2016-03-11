@@ -38,9 +38,6 @@ public class Player : MonoBehaviour {
 	void Awake(){
 		m_Instance = this;
 		iNowEgo = eEgo.Idle;
-	}
-	// Use this for initialization
-	void Start () {
 		//m_AIData初始化
 		m_AIData.fspeed = 20.0f;
 		m_AIData.fMaxspeed = m_fMaxSpeed;
@@ -68,6 +65,9 @@ public class Player : MonoBehaviour {
 		FSMIdleState IdleState = new FSMIdleState ();
 		m_FSMManager.AddState (IdleState);
 		m_AIData.m_State = m_FSMManager;
+	}
+	// Use this for initialization
+	void Start () {
 	}
 	
 	// Update is called once per frame
