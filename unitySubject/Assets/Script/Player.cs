@@ -56,6 +56,7 @@ public class Player : MonoBehaviour {
 		m_AIData.fAttack = 10.0f;
 		m_AIData.fSkill = 30.0f;
 		m_AIData.iLV = 1;
+		m_AIData.iEXP = 0;
 		m_AIData.fHP = fHP;
 		m_AIData.fMP = fMP;
 		m_AIData.fMaxHP = fMaxHP;

@@ -121,6 +121,12 @@ public class SceneManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (pComponent.m_AIData.iEXP == pComponent.m_AIData.iArrayEXP[pComponent.m_AIData.iLV]) {
+			if(pComponent.m_AIData.iLV != pComponent.m_AIData.iMAXEXP){
+				pComponent.m_AIData.iEXP = 0;
+				pComponent.m_AIData.iLV += 1;
+			}
+		}
 		//if (pComponent.m_AIData.targetPoint != null) {
 			//m_MoniterVitalBar.SetActive (true);
 		//} else {
@@ -134,6 +140,7 @@ public class SceneManager : MonoBehaviour {
 		//2.如果bWinOrLose = true，判斷
 		////1.如果bWinOrLose = true，勝利
 		////2.如果bWinOrLose = false，失敗
+		/*
 		if(Input.GetKey(KeyCode.G)){
 			//記得之後要改變m_NowPlayer
 			int iSlot = -1;
@@ -144,6 +151,7 @@ public class SceneManager : MonoBehaviour {
 			go = ObjectPool.m_Instance.LoadObjectFromPool (1);
 			go.transform.position = pos;
 		}
+		*/
 	}
 
 

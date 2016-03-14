@@ -213,6 +213,7 @@
      <Compile Include="Assets\Script\Point.cs" />
      <Compile Include="Assets\Script\PointLine.cs" />
      <Compile Include="Assets\Script\SceneManager.cs" />
+     <Compile Include="Assets\Script\UI_ButtonMsg.cs" />
      <Compile Include="Assets\Script\UI_FloatingBar.cs" />
      <Compile Include="Assets\Script\UI_MonisterBarBasic.cs" />
      <Compile Include="Assets\Script\UI_PlayerBarBasic.cs" />
@@ -329,17 +330,11 @@
      <None Include="Assets\DungeonMasterKit\Dungeon_levels\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\FXAAPreset2.shader" />
      <None Include="Assets\DungeonMasterKit\Dungeon_levels\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlurAndFlares.shader" />
      <None Include="Assets\DungeonMasterKit\Dungeon_levels\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlendForBloom.shader" />
- <Reference Include="UnityEngine.Advertisements">
- <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine.Analytics">
- <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Cecil">
  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/Mono.Cecil.dll</HintPath>

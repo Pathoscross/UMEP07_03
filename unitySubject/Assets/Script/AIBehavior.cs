@@ -24,7 +24,10 @@ public class AIData{
 	public int iAstarIndex; //目前seek到的Astar是第幾個點
 	public float thisPositionZ; //自己位置的Z軸
 
-	public int iLV = 0;
+	public int iLV;//等級
+	public int iEXP;//經驗值
+	public int iMAXEXP = 5;//最高等級
+	public int[] iArrayEXP = new int[] { 100, 300, 500, 700, 900 };//經驗值
 	public float fDetectLength; //可視範圍長度
 	public float fAttackLength; //攻擊範圍長度
 	public float fHP = 0.0f; //生命值
