@@ -45,6 +45,10 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Blade_NPC_SpecialPack\scripts\Girl_2_Move.cs" />
+     <Compile Include="Assets\Blade_NPC_SpecialPack\scripts\boymove.cs" />
+     <Compile Include="Assets\Blade_NPC_SpecialPack\scripts\girlmove.cs" />
+     <Compile Include="Assets\Blade_NPC_SpecialPack\scripts\moster.cs" />
      <Compile Include="Assets\DungeonMasterKit\Dungeon_levels\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
      <Compile Include="Assets\DungeonMasterKit\Dungeon_levels\Standard Assets\Image Effects (Pro Only)\BlurEffect.cs" />
      <Compile Include="Assets\DungeonMasterKit\Dungeon_levels\Standard Assets\Image Effects (Pro Only)\ColorCorrectionEffect.cs" />
@@ -212,7 +216,9 @@
      <Compile Include="Assets\Script\PlayerBoy.cs" />
      <Compile Include="Assets\Script\Point.cs" />
      <Compile Include="Assets\Script\PointLine.cs" />
+     <Compile Include="Assets\Script\RigidbodyFPSController.cs" />
      <Compile Include="Assets\Script\SceneManager.cs" />
+     <Compile Include="Assets\Script\SmoothDamp.cs" />
      <Compile Include="Assets\Script\UI_ButtonMsg.cs" />
      <Compile Include="Assets\Script\UI_FloatingBar.cs" />
      <Compile Include="Assets\Script\UI_MonisterBarBasic.cs" />
@@ -247,6 +253,7 @@
      <None Include="Assets\Font\Font.txt" />
      <None Include="Assets\DungeonMasterKit\Dungeon_levels\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\MotionBlur.shader" />
      <None Include="Assets\DungeonMasterKit\Dungeon_levels\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\GlowCompose.shader" />
+     <None Include="Assets\Blade_NPC_SpecialPack\Shader\Unlit_2Side.shader" />
      <None Include="Assets\DungeonMasterKit\Dungeon_levels\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\Contrast Stretch\MinMaxReduction.shader" />
      <None Include="Assets\DungeonMasterKit\Dungeon_levels\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\SSAA.shader" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (TextureClip).shader" />
@@ -330,11 +337,17 @@
      <None Include="Assets\DungeonMasterKit\Dungeon_levels\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\FXAAPreset2.shader" />
      <None Include="Assets\DungeonMasterKit\Dungeon_levels\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlurAndFlares.shader" />
      <None Include="Assets\DungeonMasterKit\Dungeon_levels\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlendForBloom.shader" />
+ <Reference Include="UnityEngine.Advertisements">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Analytics">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Cecil">
  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/Mono.Cecil.dll</HintPath>
