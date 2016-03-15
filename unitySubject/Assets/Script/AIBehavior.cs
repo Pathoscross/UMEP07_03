@@ -27,6 +27,7 @@ public class AIData{
 	public int iLV;//等級
 	public int iEXP;//經驗值
 	public int iMAXEXP = 5;//最高等級
+	public int iEXPGET;//用於怪物死亡時玩家可獲得的經驗值
 	public int[] iArrayEXP = new int[] { 100, 300, 500, 700, 900 };//經驗值
 	public float fDetectLength; //可視範圍長度
 	public float fAttackLength; //攻擊範圍長度

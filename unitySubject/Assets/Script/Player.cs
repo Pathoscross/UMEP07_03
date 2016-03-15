@@ -12,22 +12,6 @@ public class Player : MonoBehaviour {
 	public AStar m_AStar;
 	//FSM
 	private FSMManager m_FSMManager;
-	//=============================角色動作=============================
-	public Animator Anim;
-	public AnimatorStateInfo BS;
-	static int Idle = Animator.StringToHash("Base.Layer.BG_Chibi_Idle");
-	static int Run = Animator.StringToHash("Base.Layer.BG_Chibi_B_Run");
-	static int Attac = Animator.StringToHash("Base.Layer.0G_Chibi_Attack00");
-	static int Skill = Animator.StringToHash("Base.Layer.0G_Chibi_Attack00");
-	public enum eEgo {
-		None = -1,
-		Idle,
-		Run,
-		Attac,
-		Skill
-	}
-	public eEgo iNowEgo = eEgo.None;
-	//=============================完=============================
 	//需要外讀的資料
 	public string sName = "我是玩家喔";
 	public float fHP = 100.0f;
@@ -37,7 +21,6 @@ public class Player : MonoBehaviour {
 
 	void Awake(){
 		m_Instance = this;
-		iNowEgo = eEgo.Idle;
 		//m_AIData初始化
 		m_AIData.fspeed = 20.0f;
 		m_AIData.fMaxspeed = m_fMaxSpeed;
@@ -73,25 +56,7 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		m_FSMManager.DoState(m_AIData);
-		//=============================角色動作=============================
-		/*
-		Anim.SetBool("Run", false);
-		Anim.SetBool("Attac", false);
-		Anim.SetBool("Skill", false);
-		Debug.Log ("iNowEgo======================================"+iNowEgo);
-		if(iNowEgo == eEgo.Idle){
-			Debug.Log ("iNowEgo目前是idle======================================"+iNowEgo);
-			Anim.SetBool("Idle", true);
-		} else if(iNowEgo == eEgo.Run){
-			Anim.SetBool("Run", true);
-		} else if(iNowEgo == eEgo.Attac){
-			Anim.SetBool("Attac", true);
-		} else if(iNowEgo == eEgo.Skill){
-			Anim.SetBool("Skill", true);
-		}
-		*/
-		//=============================完=============================
+		//m_FSMManager.DoState(m_AIData);
 	}
 
 	void OnDrawGizmos(){

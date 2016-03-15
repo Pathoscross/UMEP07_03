@@ -211,8 +211,8 @@ public class AStar : MonoBehaviour {
 			for (int i=0; i<iLength-1; i++) {
 				Vector3 vPos = (Vector3)m_PathList [i];
 				Vector3 vPosN = (Vector3)m_PathList [i + 1];
-				vPos.y += 5.0f;
-				vPosN.y += 5.0f;
+				vPos.y += 1.0f;
+				vPosN.y += 1.0f;
 				Gizmos.DrawLine (vPos, vPosN);
 			}
 		}

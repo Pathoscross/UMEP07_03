@@ -583,7 +583,7 @@ public class FSMIdleState : FSMBaseState{
 					//在攻擊範圍，攻擊
 				//選擇技能
 					//直接放技能，依照範圍判定有被傷害的目標
-				pComponent.iNowEgo = Player.eEgo.Run;
+				//pComponent.iNowEgo = Player.eEgo.Run;
 				iSlotFSM = -1;
 				Debug.Log ("移動到目標中");
 				data.targetPosition = data.targetPoint.gameObject.transform.position;
@@ -593,7 +593,7 @@ public class FSMIdleState : FSMBaseState{
 				ObjectPool.m_Instance.FindObjectToPool(out iSlotFSM, data.targetPoint.gameObject);
 				if (fDist < data.fAttackLength) {
 					Debug.Log ("到達攻擊範圍");
-					pComponent.iNowEgo = Player.eEgo.Attac;
+					//pComponent.iNowEgo = Player.eEgo.Attac;
 					m_GameObject = data.targetPoint;
 					nComponent = m_GameObject.GetComponent<NPC>();
 					//攻擊動作
@@ -613,7 +613,7 @@ public class FSMIdleState : FSMBaseState{
 							//data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
 						}
 						iHit = -1;
-						pComponent.iNowEgo = Player.eEgo.Idle;
+						//pComponent.iNowEgo = Player.eEgo.Idle;
 						//data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
 					}
 					fTime += Time.deltaTime;
@@ -621,7 +621,7 @@ public class FSMIdleState : FSMBaseState{
 				} else {
 					if (AIBehavior.OBS (data.thisPoint, data, false) == false) {//如果沒有撞到東西
 						if (AIBehavior.Seek (data.thisPoint, data) == false) {
-							pComponent.iNowEgo = Player.eEgo.Idle;
+							//pComponent.iNowEgo = Player.eEgo.Idle;
 							bArrival = true;
 							return;
 						}

@@ -90,9 +90,9 @@ public class SceneManager : MonoBehaviour {
 			go = ObjectPool.m_Instance.LoadObjectFromPool (i+iPlayerCount);
 			//到時直接安排位置，不用Random
 			pos = Vector3.zero;
-			pos.x = 3.0f;
+			pos.x = 5.0f;
 			pos.y = 1.0f;
-			pos.z = -7.0f;
+			pos.z = -95.0f;
 			//存Z軸值
 			nComponent = go.gameObject.GetComponent<NPC> ();
 			nComponent.m_AIData.thisPositionZ = pos.z;
@@ -105,7 +105,6 @@ public class SceneManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Debug.Log ("=================================pComponent.m_AIData.iLV"+pComponent.m_AIData.iLV);
 	}
 	
 	// Update is called once per frame
