@@ -14,6 +14,6 @@ public class Point : MonoBehaviour {
 	}
 
 	void OnDrawGizmos(){
-		Gizmos.DrawWireSphere (this.transform.position, 3.0f);
+		Gizmos.DrawWireSphere (this.transform.position, 0.5f);
 	}
 }

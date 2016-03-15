@@ -62,29 +62,21 @@ public class SceneManager : MonoBehaviour {
 		}
 
 		//生成Prefab
-		//玩家prefabs生成，從外部傳遞id，if = 1 ，生成哪個prefabs，下略
 		iPlayerCount = 2;
 		m_EnemyTarget = new GameObject[iPlayerCount];
-		//ObjectPool.m_Instance.InitObjectsInPool (m_Player, 1);
-		//ObjectPool.m_Instance.InitObjectsInPool (m_Player2, 1);
 		for (int i=0; i<iPlayerCount; i++) {
 			if (i == 0){ go = ObjectPool.m_Instance.InitObjectsInPool (m_Player, 1); }
 			if (i == 1){ go = ObjectPool.m_Instance.InitObjectsInPool (m_Player2, 1); }
 			m_EnemyTarget [i] = go;
 		}
-		//玩家Prefab
-		//int iCount = ObjectPool.m_Instance.m_GameObjects [0].Count;
-		//for (int i=0; i<iPlayerCount; i++) {
 		go = ObjectPool.m_Instance.LoadObjectFromPool (0);
-		//到時直接安排位置，不用Random
 		pos = Vector3.zero;
-		pos.x = 20.0f;
-		pos.y = 1.0f;
-		pos.z = 0.0f;
+		pos.x = 5.7f;
+		pos.y = 4.0f;
+		pos.z = -109.0f;
 		go.transform.position = pos;
-		//Vector3.right指向-x，left指向x
-		//go.transform.forward = Vector3.right;
-		//}
+		m_NowPlayer = go.gameObject;
+		pComponent = m_NowPlayer.GetComponent <Player> ();
 
 		//生成敵人Prefab
 		iEnemyCount = 0;
@@ -108,9 +100,6 @@ public class SceneManager : MonoBehaviour {
 			go.transform.position = pos;
 			go.transform.forward = Vector3.left;
 			//目前玩家==================================
-			//到時要改成實體第一個玩家時將資料輸進m_NowPlayer，切換玩家時改變m_NowPlayer
-			m_NowPlayer = ObjectPool.m_Instance.FindNowPlayer ();
-			pComponent = m_NowPlayer.GetComponent <Player> ();
 		}
 	}
 

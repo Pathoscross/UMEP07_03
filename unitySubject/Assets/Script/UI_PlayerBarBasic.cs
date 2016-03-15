@@ -21,15 +21,17 @@ public class UI_PlayerBarBasic : MonoBehaviour {
 	public bool displayText = true;
 	
 	void Start() {
-		UpdateVitalBar();
+		UpdateVitalBar ();
 		//名字
 		label_Name.text = SceneManager.m_Instance.pComponent.sName;
 		//等級
 		iLV = SceneManager.m_Instance.pComponent.m_AIData.iLV;
-		label_LV.text = "LV." + iLV.ToString();
+		label_LV.text = "LV." + iLV.ToString ();
 		//經驗值
-		iEXP = SceneManager.m_Instance.pComponent.m_AIData.iEXP;
-		label_EXP.text = "LV." + iLV.ToString();
+		if (vbEXP != null) {
+			iEXP = SceneManager.m_Instance.pComponent.m_AIData.iEXP;
+			label_EXP.text = iEXP.ToString ();
+		}
 	}
 
 	void Update () {

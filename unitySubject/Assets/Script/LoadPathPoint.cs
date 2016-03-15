@@ -5,7 +5,7 @@ public class LoadPathPoint{
 
 	public static void LoadPathPointDesc (PathNode [] m_NodeList){
 
-		TextAsset ta=(TextAsset)Resources.Load ("WP");
+		TextAsset ta=(TextAsset)Resources.Load ("WayPoint");
 		string [] sText=ta.text.Split("\n"[0]);
 		int tLenth=sText.Length;
 		string sID;
