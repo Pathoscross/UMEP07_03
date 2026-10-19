@@ -154,6 +154,7 @@ public class AIBehavior{
 		float fMinDot = 0.0f;
 		Vector3 tMinVec = Vector3.zero;
 		float fMinTotalR = 0.0f;
+		float fMinSinLen = 0.0f;
 		
 		for (int i=0; i<iLength; i++) {
 			
@@ -193,6 +194,7 @@ public class AIBehavior{
 				fMinDot = fDot;
 				tMinVec = tVec;
 				fMinTotalR = fTotalR;
+				fMinSinLen = fSinLen;
 			}
 		}
 		
@@ -200,7 +202,8 @@ public class AIBehavior{
 		if (mMinObs != null) {
 			
 			float fForwardForce = fMinDot;
-			float fTurnForce = fMinTotalR/(fSinLen+0.01f);
+			//要用「最近那顆障礙物」的 sin 距離，而不是迴圈最後算到的那顆
+			float fTurnForce = fMinTotalR/(fMinSinLen+0.01f);
 			
 			float fSign = fTurnForce * 0.1f;
 			
@@ -310,31 +313,47 @@ public class AIBehavior{
 	public static GameObject CheckPlayer(AIData data, out float fOutMinDist, out int ioutSlotAI){ //(裡面回傳距離，判定距離過小時直接進行攻擊等等)
 		
 		GameObject [] gos = SceneManager.m_Instance.m_EnemyTarget;
-		Vector3 tPos;
-		Vector3 tVec;
-		float fDist = 0.0f;
-		float fMinDist = 10000.0f;
+		Vector3 cPos = data.thisPoint.transform.position;
+		float fMinSqrDist = float.MaxValue;
 		GameObject go = null;
-		//int iTarget = -1;
-		bool bUsing = false;
 		ioutSlotAI = -1;
-		int iLength = SceneManager.m_Instance.m_EnemyTarget.Length;
-		for (int i=0; i<iLength; i++) {
-			tPos = gos [i].transform.position;
-			tVec = tPos - data.thisPoint.gameObject.transform.position;
-			fDist = tVec.magnitude;
-			bUsing = ObjectPool.m_Instance.FindObjectToPool (out ioutSlotAI, gos [i].gameObject);
-			//bUsing = ObjectPool.m_Instance.FindObjectToPool(i, gos[i].gameObject);
-			Debug.Log ("啟用=" + bUsing);
-			if (fDist < fMinDist && bUsing == true) {
-				Debug.Log ("找到目標");
-				//iTarget = i;
-				fMinDist = fDist;
+		for (int i = 0; i < gos.Length; i++) {
+			if (gos [i] == null) {
+				continue;
+			}
+			float fSqrDist = (gos [i].transform.position - cPos).sqrMagnitude;
+			if (fSqrDist >= fMinSqrDist) {
+				continue;
+			}
+			//只鎖定池子裡「使用中」的目標（已死亡/未出場的跳過）
+			if (ObjectPool.m_Instance.FindObjectToPool (out ioutSlotAI, gos [i])) {
+				fMinSqrDist = fSqrDist;
 				go = gos [i];
 			}
 		}
-		//ioutTarget = iTarget;
-		fOutMinDist = fMinDist;
+		//沒找到目標時維持舊行為：回傳 10000
+		fOutMinDist = (go != null) ? Mathf.Sqrt (fMinSqrDist) : 10000.0f;
 		return go;
+	}
+}
+
+//角色探針的 Gizmo（NPC / Player / PlayerBoy / Wall 共用）
+public static class AIGizmos {
+	public static void DrawProbe(Transform t, float fProbe, float fHalfWidth){
+		Vector3 vPos = t.position;
+		Vector3 vFor = t.forward * fProbe;
+		Vector3 vRight = t.right * fHalfWidth;
+
+		Gizmos.color = Color.green;
+		Gizmos.DrawLine (vPos, vPos + vFor);
+
+		Gizmos.color = Color.blue;
+		Vector3 vR = vPos + vRight;
+		Vector3 vL = vPos - vRight;
+		Gizmos.DrawLine (vPos, vR);
+		Gizmos.DrawLine (vR, vR + vFor);
+		Gizmos.DrawLine (vPos, vL);
+		Gizmos.DrawLine (vL, vL + vFor);
+		Gizmos.DrawLine (vL + vFor, vR + vFor);
 	}
 }

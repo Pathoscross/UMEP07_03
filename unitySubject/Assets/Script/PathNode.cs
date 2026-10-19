@@ -49,8 +49,12 @@ public class WayPoint{
 			
 			tNodeName = point [i].name;
 			s = tNodeName.Split ('_');
-			
-			iWP = int.Parse (s [1]);
+
+			//名稱格式必須是 XXX_編號，且編號要在範圍內
+			if (s.Length < 2 || !int.TryParse (s [1], out iWP) || iWP < 0 || iWP >= pLenth) {
+				Debug.LogError ("WayPoint 名稱格式錯誤（需為 XXX_編號，且編號 < " + pLenth + "）：" + tNodeName);
+				continue;
+			}
 			pNode.iID = iWP;
 			m_NodeList [iWP] = pNode;
 		}
@@ -64,20 +68,25 @@ public class WayPoint{
 	//獲得Node的ID
 	public int GetNodeID(Vector3 pos){
 		int iLength = m_NodeList.Length;
-		Vector3 posN;
-		float fMinDist = 10000.0f;
+		int iWallMask = 1 << LayerMask.NameToLayer ("Wall");
+		float fMinSqrDist = float.MaxValue;
 		int iRet = -1;
 
 		for (int i = 0; i < iLength; i++) {
-			posN = m_NodeList [i].tPoint;
-			if (Physics.Linecast (pos, posN, 1 << LayerMask.NameToLayer ("Wall"))) {
+			if (m_NodeList [i] == null) {
 				continue;
 			}
-			Vector3 tVec = posN - pos;
-			if (tVec.magnitude < fMinDist) {
-				fMinDist = tVec.magnitude;
-				iRet = i;
+			Vector3 posN = m_NodeList [i].tPoint;
+			//先比距離（便宜），比較近才做 Linecast（昂貴）
+			float fSqrDist = (posN - pos).sqrMagnitude;
+			if (fSqrDist >= fMinSqrDist) {
+				continue;
 			}
+			if (Physics.Linecast (pos, posN, iWallMask)) {
+				continue;
+			}
+			fMinSqrDist = fSqrDist;
+			iRet = i;
 		}
 		return iRet;
 	}

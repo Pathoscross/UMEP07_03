@@ -1,30 +1,44 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class UI_FloatingBar : MonoBehaviour {
 	public GameObject VitalBar = null;
 	public GameObject InsVitalBar = null;
 	public Camera worldCamera;
 	public Camera guiCamera;
+
+	static readonly Vector3 s_vHidden = new Vector3(-10000.0f, -10000.0f, -10000.0f);
 	
 	void Awake() {
 		//呼叫VitalBar，然後實體化
 		VitalBar = Resources.Load("Monster_VitalBar") as GameObject;
+		if (VitalBar == null) {
+			Debug.LogError("找不到 Resources/Monster_VitalBar");
+			return;
+		}
 		InsVitalBar = Instantiate (VitalBar) as GameObject;
 		//血槽
 		InsVitalBar.GetComponent<UI_MonisterBarBasic> ().m_GO = gameObject.transform.parent.gameObject;
 	}
 
-
-
 	public void LateUpdate() {
-		worldCamera = NGUITools.FindCameraForLayer(this.gameObject.layer);//頭頂物件
-		guiCamera = NGUITools.FindCameraForLayer(InsVitalBar.gameObject.layer);//2D物件
+		if (InsVitalBar == null) {
+			return;
+		}
+		//相機只在還沒找到（或被刪掉）時才去找，不必每幀搜尋
+		if (worldCamera == null) {
+			worldCamera = NGUITools.FindCameraForLayer(this.gameObject.layer);//頭頂物件
+		}
+		if (guiCamera == null) {
+			guiCamera = NGUITools.FindCameraForLayer(InsVitalBar.layer);//2D物件
+		}
+		if (worldCamera == null || guiCamera == null) {
+			return;
+		}
 
 		Vector3 pos = worldCamera.WorldToViewportPoint(this.transform.position); //先知道"target3D物件"的螢幕位置(空物件)
 
 		if(pos.z < 0.0f) {
-			pos = new Vector3(-10000.0f, -10000.0f, -10000.0f); //給予一個很大的值讓他不要在畫面上，也可以做成不顯示
+			pos = s_vHidden; //在相機背後就移出畫面
 		} else {
 			pos = guiCamera.ViewportToWorldPoint(pos); //再把"target3D物件的螢幕位置"投射到3D位置
 			pos.z = 0.0f;
@@ -33,11 +47,15 @@ public class UI_FloatingBar : MonoBehaviour {
 	}
 
 	void OnEnable(){
-		InsVitalBar.SetActive(true);
+		if (InsVitalBar != null) {
+			InsVitalBar.SetActive(true);
+		}
 	}
 
 	void OnDisable(){
-		InsVitalBar.SetActive(false);
+		if (InsVitalBar != null) {
+			InsVitalBar.SetActive(false);
+		}
 	}
 
 }

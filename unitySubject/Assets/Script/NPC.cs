@@ -90,19 +90,15 @@ public class NPC : MonoBehaviour {
 		m_AIData.m_State = m_FSMManager;
 	}
 
-	// Use this for initialization
-	void Start () {
-
-	}
-	
-	// Update is called once per frame
 	void Update () {
-		m_FSMManager.DoState(m_AIData);
-		if (m_AIData.fHP == 0.0f) {
+		//先判斷死亡：死掉就給經驗值並回收，不再跑 AI（避免死後還出手一次）
+		if (m_AIData.fHP <= 0.0f) {
 			SceneManager.m_Instance.pComponent.m_AIData.iEXP += m_AIData.iEXPGET;
-			int iSlotFSM = -1;
+			int iSlotFSM;
 			ObjectPool.m_Instance.UnLoadObjectToPool(out iSlotFSM, this.gameObject);
+			return;
 		}
+		m_FSMManager.DoState(m_AIData);
 		//測試經驗值
 		//if(Input.GetKey(KeyCode.G)){
 		//this.m_AIData.fHP = 0.0f;
@@ -134,21 +130,7 @@ public class NPC : MonoBehaviour {
 	void OnDrawGizmos(){
 		
 		if (m_AIData != null) {
-			Gizmos.color = Color.green;
-			Gizmos.DrawLine (this.transform.position, this.transform.position + this.transform.forward * m_AIData.fColProbe);
-			
-			Gizmos.color = Color.blue;
-			
-			Vector3 vR = this.transform.position + this.transform.right * 1.0f;
-			Gizmos.DrawLine (this.transform.position, vR);
-			Gizmos.DrawLine (vR, vR + this.transform.forward * m_AIData.fColProbe);
-			
-			
-			Vector3 vL = this.transform.position + this.transform.right * -1.0f;
-			Gizmos.DrawLine (this.transform.position, vL);
-			Gizmos.DrawLine (vL, vL + this.transform.forward * m_AIData.fColProbe);
-			
-			Gizmos.DrawLine (vL + this.transform.forward * m_AIData.fColProbe, vR + this.transform.forward * m_AIData.fColProbe);
+			AIGizmos.DrawProbe (this.transform, m_AIData.fColProbe, 1.0f);
 		}
 		
 	}

@@ -5,15 +5,7 @@ public class Obstacle : MonoBehaviour {
 
 	public float fObsRadius = 5.0f;
 
-	// Use this for initialization
-	void Start () {
 	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	void OnDrawGizmos(){
         Gizmos.color = Color.green;

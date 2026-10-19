@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class UI_VitalBar : MonoBehaviour {
 	
@@ -18,8 +17,8 @@ public class UI_VitalBar : MonoBehaviour {
 	}
 	
 	public void UpdateDisplay(float x) {
-		//血量防呆
-		if(x < 0.0f) { x = 0.0f; }
+		//血量防呆（NaN 也歸零，例如最大值為 0 時）
+		if(!(x > 0.0f)) { x = 0.0f; }
 		else if(x > 1.0f) { x = 1.0f; }
 		_slider.value = x;
 		DisplayText = false;
@@ -27,7 +26,7 @@ public class UI_VitalBar : MonoBehaviour {
 	
 	public void UpdateDisplay(float x, string str) {
 		UpdateDisplay(x);
-		if(str != "") {
+		if(!string.IsNullOrEmpty(str)) {
 			DisplayText = true;
 			label.text = str;
 		}

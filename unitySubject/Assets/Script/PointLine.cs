@@ -1,42 +1,6 @@
 using UnityEngine;
-using System.Collections;
 
+//目前沒有功能；WayPoint 連線改由 SceneManager.OnDrawGizmos 繪製。
+//保留類別是因為場景/prefab 可能仍掛著這個元件。
 public class PointLine : MonoBehaviour {
-
-
-	/*
-	// Use this for initialization
-	void Start () {
-
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-
-
-	void OnDrawGizmos(){
-
-		if (m_NodeList == null) {
-			return;
-		}
-
-		Vector3 tPoint;
-
-		int pLenth = m_NodeList.Length;
-		for (int i = 0; i < pLenth; i++) {
-			tPoint = m_NodeList [i].tPoint;
-			int iNeibors = m_NodeList [i].iNeibors;
-			for (int j = 0; j < iNeibors; j++) {
-				Gizmos.color = Color.cyan;
-				Gizmos.DrawLine (tPoint, m_NodeList [i].NeiborsNode [j].tPoint);
-			}
-		}
-
-	}
-	*/
-
 }

@@ -24,6 +24,11 @@ public class PlayerBoy : MonoBehaviour
     static int Run = Animator.StringToHash("Base.Layer.BW_Chibi_B_Run");
     static int Attac = Animator.StringToHash("Base.Layer.BW_Chibi_Attack00");
     static int Skill = Animator.StringToHash("Base.Layer.BW_Chibi_Skill");
+    //Animator 參數的 hash，避免每幀用字串查詢
+    static readonly int s_iParamIdle = Animator.StringToHash("Idle");
+    static readonly int s_iParamRun = Animator.StringToHash("Run");
+    static readonly int s_iParamAttac = Animator.StringToHash("Attac");
+    static readonly int s_iParamSkill = Animator.StringToHash("Skill");
     public enum eEgo
     {
         None = -1,
@@ -42,7 +47,7 @@ public class PlayerBoy : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        m_AStar = this.GetComponent<AStar>(); ;
+        m_AStar = this.GetComponent<AStar>();
         //m_AIData初始化
         m_AIData.fspeed = 20.0f;
         m_AIData.fMaxspeed = m_fMaxSpeed;
@@ -95,27 +100,11 @@ public class PlayerBoy : MonoBehaviour
     {
         m_FSMManager.DoState(m_AIData);
         //=============================角色動作=============================
-        Anim.SetBool("Run", false);
-        Anim.SetBool("Attac", false);
-        Anim.SetBool("Skill", false);
-        Debug.Log("iNowEgo======================================" + iNowEgo);
-        if (iNowEgo == eEgo.Idle)
-        {
-            Debug.Log("iNowEgo目前是idle======================================" + iNowEgo);
-            Anim.SetBool("Idle", true);
-        }
-        else if (iNowEgo == eEgo.Run)
-        {
-            Anim.SetBool("Run", true);
-        }
-        else if (iNowEgo == eEgo.Attac)
-        {
-            Anim.SetBool("Attac", true);
-        }
-        else if (iNowEgo == eEgo.Skill)
-        {
-            Anim.SetBool("Skill", true);
-        }
+        //四個狀態互斥：只有目前的那個為 true（舊版 Idle 設成 true 後永遠不會關掉）
+        Anim.SetBool(s_iParamIdle, iNowEgo == eEgo.Idle);
+        Anim.SetBool(s_iParamRun, iNowEgo == eEgo.Run);
+        Anim.SetBool(s_iParamAttac, iNowEgo == eEgo.Attac);
+        Anim.SetBool(s_iParamSkill, iNowEgo == eEgo.Skill);
         //=============================完=============================
     }
 
@@ -132,34 +121,9 @@ public class PlayerBoy : MonoBehaviour
 
     void OnDrawGizmos()
     {
-
         if (m_AIData != null)
         {
-            ///*
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(this.transform.position, this.transform.position + this.transform.forward * m_AIData.fColProbe);
-
-            Gizmos.color = Color.blue;
-
-            Vector3 vR = this.transform.position + this.transform.right * 1.0f;
-            Gizmos.DrawLine(this.transform.position, vR);
-            Gizmos.DrawLine(vR, vR + this.transform.forward * m_AIData.fColProbe);
-
-
-            Vector3 vL = this.transform.position + this.transform.right * -1.0f;
-            Gizmos.DrawLine(this.transform.position, vL);
-            Gizmos.DrawLine(vL, vL + this.transform.forward * m_AIData.fColProbe);
-
-            Gizmos.DrawLine(vL + this.transform.forward * m_AIData.fColProbe, vR + this.transform.forward * m_AIData.fColProbe);
-            //*/
-            /*
-			Gizmos.color = Color.blue;
-			Gizmos.DrawLine(this.transform.position, this.transform.position + this.transform.forward * m_AIData.fDetectLength);
-
-			Gizmos.color = Color.red;
-			Gizmos.DrawLine(this.transform.position, this.transform.position + this.transform.forward * m_AIData.fAttackLength);
-			*/
+            AIGizmos.DrawProbe(this.transform, m_AIData.fColProbe, 1.0f);
         }
-
     }
 }

@@ -86,7 +86,6 @@ public class SceneManager : MonoBehaviour {
 		}
 		m_Target = new GameObject[iEnemyCount];
 		for (int i=0; i<iEnemyCount; i++) {
-			Debug.Log("敵人的"+i);
 			go = ObjectPool.m_Instance.LoadObjectFromPool (i+iPlayerCount);
 			//到時直接安排位置，不用Random
 			pos = Vector3.zero;
@@ -103,17 +102,14 @@ public class SceneManager : MonoBehaviour {
 		}
 	}
 
-	// Use this for initialization
-	void Start () {
-	}
-	
-	// Update is called once per frame
 	void Update () {
-		if (pComponent.m_AIData.iEXP == pComponent.m_AIData.iArrayEXP[pComponent.m_AIData.iLV]) {
-			if(pComponent.m_AIData.iLV != pComponent.m_AIData.iMAXEXP){
-				pComponent.m_AIData.iEXP = 0;
-				pComponent.m_AIData.iLV += 1;
-			}
+		//升級：經驗值達門檻就升級，多出來的經驗值保留到下一級
+		//等級上限同時受 iMAXEXP 與經驗表長度限制（舊版到 Lv5 會讀 iArrayEXP[5] 越界）
+		AIData d = pComponent.m_AIData;
+		int iMaxLV = Mathf.Min (d.iMAXEXP, d.iArrayEXP.Length - 1);
+		while (d.iLV < iMaxLV && d.iEXP >= d.iArrayEXP[d.iLV]) {
+			d.iEXP -= d.iArrayEXP[d.iLV];
+			d.iLV += 1;
 		}
 		//if (pComponent.m_AIData.targetPoint != null) {
 			//m_MoniterVitalBar.SetActive (true);
