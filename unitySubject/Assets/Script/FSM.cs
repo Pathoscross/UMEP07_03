@@ -210,7 +210,6 @@ public class FSMNpcIdleState : FSMBaseState{
 	}
 	
 	public override void DoState (AIData data){
-		Debug.Log (data.thisPoint+"目前狀態：" + m_StateID);
 		fTime += Time.deltaTime;
 	}
 }
@@ -219,7 +218,6 @@ public class FSMNpcTrackState : FSMBaseState{
 	
 	private float fTime;
 	private float fTrackTime;
-	GameObject m_GameObject = null;
 	NPC nComponent = null;
 	float fDist;
 	int iSlotFSM;
@@ -244,7 +242,6 @@ public class FSMNpcTrackState : FSMBaseState{
 		iSlotFSM = -1;
 		data.targetPoint = AIBehavior.CheckPlayer (data, out fDist, out iSlotFSM);
 		if (data.targetPoint != null) {
-			Debug.Log ("有目標");
 			data.targetPosition = data.targetPoint.transform.position;
 			//if (fDist < data.fDetectLength) { //距離小於可視範圍
 			//	data.m_State.PerformTransition (eTransitionID.Track_To_Chase, data);
@@ -252,7 +249,8 @@ public class FSMNpcTrackState : FSMBaseState{
 			if (fDist < data.fAttackLength) { //距離小於攻擊範圍
 				if (data.fMP > data.fSkillMP) {
 					//=============================技能進入機率=============================
-					iRandom = Random.Range (1, 2);
+					//int 版 Random.Range 不含上限，(1, 3) 才會得到 1 或 2，各 50%
+					iRandom = Random.Range (1, 3);
 					if (iRandom == 2) {
 					//=============================完=============================
 						data.m_State.PerformTransition (eTransitionID.Track_To_Attack, data);
@@ -267,9 +265,10 @@ public class FSMNpcTrackState : FSMBaseState{
 	}
 	
 	public override void DoState (AIData data){
-		//Debug.Log ("前往目標");
-		m_GameObject = data.thisPoint;
-		nComponent = m_GameObject.GetComponent<NPC> ();
+		//每個 NPC 都有自己的 State 實例，元件只需抓一次
+		if (nComponent == null) {
+			nComponent = data.thisPoint.GetComponent<NPC> ();
+		}
 		//如果沒有小於攻擊範圍，就追逐
 		if (data.iAstarIndex > -1) {
 			//Debug.Log ("iAstarIndex" + data.iAstarIndex);
@@ -301,7 +300,6 @@ public class FSMNpcTrackState : FSMBaseState{
 				data.iAstarIndex = 0;
 			}
 		}
-		Debug.Log (data.thisPoint+"目前狀態：" + m_StateID);
 	}
 
 	public override void DoBeforeLeave (AIData data){
@@ -315,12 +313,9 @@ public class FSMNpcAttackState : FSMBaseState{
 	public float fAttackTime; //攻擊動作的時間
 	GameObject m_pGameObject = null;
 	Player pComponent = null;
+	Renderer m_Renderer = null;
 	float fDist;
 	int iSlotFSM;
-	//=============================測試用=============================
-	float fScale = 0.0f;
-	float fScaleMax = 2.0f;
-	//=============================完=============================
 	
 	public FSMNpcAttackState(){
 		m_StateID = eStateID.Attack;
@@ -341,7 +336,6 @@ public class FSMNpcAttackState : FSMBaseState{
 		fDist = 10000.0f;
 		iSlotFSM = -1;
 		data.targetPoint = AIBehavior.CheckPlayer (data, out fDist, out iSlotFSM);
-		Debug.Log ("==========================目前距離："+fDist);
 		if (data.targetPoint != null) {
 			//m_AIData.targetAIData = m_AIData.targetPoint;
 			if (fDist >= data.fAttackLength) { //如果距離大於攻擊範圍，切到追逐狀態
@@ -353,19 +347,16 @@ public class FSMNpcAttackState : FSMBaseState{
 	}
 	
 	public override void DoState (AIData data){
-		Debug.Log (data.thisPoint + "目前狀態：" + m_StateID);
-		//取出Component
-		m_pGameObject = data.targetPoint;
-		pComponent = m_pGameObject.GetComponent<Player> ();
-		//m_nGameObject = data.thisPoint;
-		//nComponent = m_nGameObject.GetComponent<NPC> ();
-		//完
+		//取出Component（目標換了才重抓）
+		if (m_pGameObject != data.targetPoint) {
+			m_pGameObject = data.targetPoint;
+			pComponent = m_pGameObject.GetComponent<Player> ();
+		}
+		if (m_Renderer == null) {
+			m_Renderer = data.thisPoint.GetComponent<Renderer> ();
+		}
 		//=============================測試用=============================
-		Color r = Color.black;
-		r.r = Random.Range (0.0f, 1.0f);
-		r.g = Random.Range (0.0f, 1.0f);
-		r.b = Random.Range (0.0f, 1.0f);
-		data.thisPoint.GetComponent<Renderer> ().material.color = r;
+		m_Renderer.material.color = new Color (Random.value, Random.value, Random.value);
 		//=============================完=============================
 		if (fTime > fAttackTime) {
 			pComponent.m_AIData.fHP -= data.fAttack;
@@ -380,11 +371,10 @@ public class FSMNpcAttackState : FSMBaseState{
 			//=============================完=============================
 			//Debug.Log (pComponent.m_AIData.fHP);
 			if (pComponent.m_AIData.fHP == 0.0f) {
-				ObjectPool.m_Instance.UnLoadObjectToPool (out iSlotFSM, data.targetPoint.gameObject);
-				data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
+				ObjectPool.m_Instance.UnLoadObjectToPool (out iSlotFSM, data.targetPoint);
 			}
 			//=============================測試用=============================
-			data.thisPoint.GetComponent<Renderer> ().material.color = Color.white;
+			m_Renderer.material.color = Color.white;
 			//=============================完=============================
 			data.m_State.PerformTransition (eTransitionID.Attack_To_Idle, data);
 		}
@@ -398,9 +388,9 @@ public class FSMNpcSkillState : FSMBaseState{
 	public float fSkillTime; //攻擊動作的時間
 	GameObject m_pGameObject = null;
 	Player pComponent = null;
+	Renderer m_Renderer = null;
 	float fDist;
 	int iSlotFSM;
-	int iRandom;
 	//=============================測試用=============================
 	float fScale = 0.0f;
 	float fScaleMax = 2.0f;
@@ -425,7 +415,6 @@ public class FSMNpcSkillState : FSMBaseState{
 		fDist = 10000.0f;
 		iSlotFSM = -1;
 		data.targetPoint = AIBehavior.CheckPlayer (data, out fDist, out iSlotFSM);
-		Debug.Log ("==========================目前距離："+fDist);
 		if (data.targetPoint != null) {
 			//m_AIData.targetAIData = m_AIData.targetPoint;
 			if (fDist >= data.fAttackLength) { //如果距離大於攻擊範圍，切到追逐狀態
@@ -437,16 +426,19 @@ public class FSMNpcSkillState : FSMBaseState{
 	}
 	
 	public override void DoState (AIData data){
-		Debug.Log (data.thisPoint + "目前狀態：" + m_StateID);
-		//取出Component
-		m_pGameObject = data.targetPoint;
-		pComponent = m_pGameObject.GetComponent<Player> ();
-		//完
+		//取出Component（目標換了才重抓）
+		if (m_pGameObject != data.targetPoint) {
+			m_pGameObject = data.targetPoint;
+			pComponent = m_pGameObject.GetComponent<Player> ();
+		}
+		if (m_Renderer == null) {
+			m_Renderer = data.thisPoint.GetComponent<Renderer> ();
+		}
 		//=============================測試用=============================
 		if (fScale < fScaleMax) {
-			data.thisPoint.transform.localScale += new Vector3 (1.0f, 1.0f, 1.0f) * Time.deltaTime;
+			data.thisPoint.transform.localScale += Vector3.one * Time.deltaTime;
 		} else {
-			data.thisPoint.transform.localScale -= new Vector3 (1.0f, 1.0f, 1.0f) * Time.deltaTime;
+			data.thisPoint.transform.localScale -= Vector3.one * Time.deltaTime;
 			if (data.thisPoint.transform.localScale.x <= 5.0f){ fScale = 0.0f; }
 		}
 		fScale += Time.deltaTime;
@@ -463,12 +455,10 @@ public class FSMNpcSkillState : FSMBaseState{
 			//=============================完=============================
 			//Debug.Log (pComponent.m_AIData.fHP);
 			if (pComponent.m_AIData.fHP == 0.0f) {
-				Debug.Log (data.thisPoint + "===攻擊目標===" + data.targetPoint.gameObject + "===死亡===");
-				ObjectPool.m_Instance.UnLoadObjectToPool (out iSlotFSM, data.targetPoint.gameObject);
-				data.m_State.PerformTransition (eTransitionID.Skill_To_Idle, data);
+				ObjectPool.m_Instance.UnLoadObjectToPool (out iSlotFSM, data.targetPoint);
 			}
 			//=============================測試用=============================
-			data.thisPoint.GetComponent<Renderer> ().material.color = Color.white;
+			m_Renderer.material.color = Color.white;
 			//=============================完=============================
 			data.m_State.PerformTransition (eTransitionID.Skill_To_Idle, data);
 		}
@@ -501,7 +491,6 @@ public class FSMNpcWanderState : FSMBaseState{
 	}
 	
 	public override void DoState (AIData data){
-		Debug.Log (data.thisPoint+"目前狀態：" + m_StateID);
 		if (AIBehavior.OBS (data.thisPoint, data, false) == false) { //如果沒有撞到東西
 			if (AIBehavior.Seek (data.thisPoint, data) == false) {
 				bArrival = true;
@@ -528,10 +517,9 @@ public class FSMIdleState : FSMBaseState{
 	GameObject m_Collision;
 	bool bTest;
 	Vector3 vForward;
-	GameObject m_GameObject = null;
+	GameObject m_TargetObject = null;
 	NPC nComponent = null;
-	Player pComponent = null;
-	int iSlotFSM;
+	static int s_iEnemyMask = -1;
 
 	public FSMIdleState(){
 		m_StateID = eStateID.Idle;
@@ -552,7 +540,10 @@ public class FSMIdleState : FSMBaseState{
 			bTest = false;
 			Ray r = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit rHit;
-			if (Physics.Raycast (r, out rHit, 100000.0f, 1 << LayerMask.NameToLayer ("Enemy"))) {
+			if (s_iEnemyMask == -1) {
+				s_iEnemyMask = 1 << LayerMask.NameToLayer ("Enemy");
+			}
+			if (Physics.Raycast (r, out rHit, 100000.0f, s_iEnemyMask)) {
 				if (rHit.collider.gameObject.layer == 10) {//10是Enemy的Layer
 					iHit = 0;
 					data.targetPoint = rHit.collider.gameObject;
@@ -573,9 +564,6 @@ public class FSMIdleState : FSMBaseState{
 	}
 	
 	public override void DoState (AIData data){
-		Debug.Log (data.thisPoint + "目前狀態：" + m_StateID);
-		m_GameObject = data.thisPoint;
-		pComponent = m_GameObject.GetComponent<Player>();
 		if (bTest == false && vForward == Vector3.zero) {
 			if (iHit == 0) {
 				//選擇攻擊
@@ -584,21 +572,17 @@ public class FSMIdleState : FSMBaseState{
 				//選擇技能
 					//直接放技能，依照範圍判定有被傷害的目標
 				//pComponent.iNowEgo = Player.eEgo.Run;
-				iSlotFSM = -1;
-				Debug.Log ("移動到目標中");
 				data.targetPosition = data.targetPoint.gameObject.transform.position;
 				tVec = data.targetPosition - data.thisPoint.gameObject.transform.position;
 				data.thisPoint.transform.forward = tVec;
 				fDist = tVec.magnitude;
-				ObjectPool.m_Instance.FindObjectToPool(out iSlotFSM, data.targetPoint.gameObject);
 				if (fDist < data.fAttackLength) {
-					Debug.Log ("到達攻擊範圍");
 					//pComponent.iNowEgo = Player.eEgo.Attac;
-					m_GameObject = data.targetPoint;
-					nComponent = m_GameObject.GetComponent<NPC>();
+					if (m_TargetObject != data.targetPoint) {
+						m_TargetObject = data.targetPoint;
+						nComponent = m_TargetObject.GetComponent<NPC>();
+					}
 					//攻擊動作
-					Debug.Log ("fTime："+fTime);
-					Debug.Log ("fAttackTime："+fAttackTime);
 					if (fTime > fAttackTime) {
 						fTime = 0.0f;
 						nComponent.m_AIData.fHP -= data.fAttack;
@@ -606,7 +590,8 @@ public class FSMIdleState : FSMBaseState{
 							nComponent.m_AIData.fHP = 0;
 						}
 						if(nComponent.m_AIData.fHP == 0.0f){
-							ObjectPool.m_Instance.UnLoadObjectToPool(out iSlotFSM, data.targetPoint.gameObject);
+							//死亡（給經驗值、回收進池子）交給 NPC.Update 處理；
+							//若在這裡直接回收，NPC 會在給經驗值之前就被關掉
 							data.targetPoint = null;
 							//return;
 							//回到idle狀態

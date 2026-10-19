@@ -1,0 +1,25 @@
+# Unity 自動產生的快取與暫存，可隨時重建，不需進版控
+/unitySubject/[Ll]ibrary/
+/unitySubject/[Tt]emp/
+/unitySubject/[Oo]bj/
+/unitySubject/[Bb]uild/
+/unitySubject/[Bb]uilds/
+/unitySubject/[Ll]ogs/
+
+# IDE 方案檔（Unity 開啟時會重新產生）
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+.vs/
+.vscode/
+.idea/
+
+# 系統檔
+.DS_Store
+Thumbs.db

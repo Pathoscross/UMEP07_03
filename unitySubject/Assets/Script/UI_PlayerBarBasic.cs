@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class UI_PlayerBarBasic : MonoBehaviour {
 
@@ -15,56 +14,69 @@ public class UI_PlayerBarBasic : MonoBehaviour {
 	public float MaxMPValue;
 	public float EXPcurValue;
 	public float MaxEXPValue;
-	int iLV;
-	int iEXP;
+	int iLV = -1;
+	int iEXP = -1;
 	
 	public bool displayText = true;
+	bool m_bDirty = true; //數值有變才重畫，避免每幀產生新字串
 	
 	void Start() {
-		UpdateVitalBar ();
 		//名字
 		label_Name.text = SceneManager.m_Instance.pComponent.sName;
-		//等級
-		iLV = SceneManager.m_Instance.pComponent.m_AIData.iLV;
-		label_LV.text = "LV." + iLV.ToString ();
-		//經驗值
-		if (vbEXP != null) {
-			iEXP = SceneManager.m_Instance.pComponent.m_AIData.iEXP;
-			label_EXP.text = iEXP.ToString ();
-		}
+		Refresh ();
 	}
 
 	void Update () {
-		//血量
-		HPcurValue = SceneManager.m_Instance.pComponent.m_AIData.fHP;
-		MaxHPValue = SceneManager.m_Instance.pComponent.m_AIData.fMaxHP;
-		if (HPcurValue < 0.0f) { HPcurValue = 0.0f; }
-		//MP
-		MPcurValue = SceneManager.m_Instance.pComponent.m_AIData.fMP;
-		MaxMPValue = SceneManager.m_Instance.pComponent.m_AIData.fMaxMP;
-		if (MPcurValue < 0.0f) { MPcurValue = 0.0f; }
-		//EXP
-		if (vbEXP != null) {
-			EXPcurValue = SceneManager.m_Instance.pComponent.m_AIData.iEXP;
-			MaxEXPValue = SceneManager.m_Instance.pComponent.m_AIData.iArrayEXP[SceneManager.m_Instance.pComponent.m_AIData.iLV];
-			if (MPcurValue < 0.0f) { MPcurValue = 0.0f; }
+		Refresh ();
+	}
+
+	void Refresh() {
+		AIData d = SceneManager.m_Instance.pComponent.m_AIData;
+
+		//等級／經驗值標籤（舊版只在 Start 設一次，升級後不會更新）
+		if (d.iLV != iLV) {
+			iLV = d.iLV;
+			label_LV.text = "LV." + iLV;
+			m_bDirty = true;
 		}
-		UpdateVitalBar();
+		if (vbEXP != null && d.iEXP != iEXP) {
+			iEXP = d.iEXP;
+			label_EXP.text = iEXP.ToString ();
+		}
+
+		float fHP = Mathf.Max (d.fHP, 0.0f);
+		float fMP = Mathf.Max (d.fMP, 0.0f);
+		float fEXP = d.iEXP;
+		//經驗表索引防呆，避免滿等時越界
+		float fMaxEXP = d.iArrayEXP[Mathf.Clamp (d.iLV, 0, d.iArrayEXP.Length - 1)];
+
+		if (m_bDirty || fHP != HPcurValue || d.fMaxHP != MaxHPValue
+			|| fMP != MPcurValue || d.fMaxMP != MaxMPValue
+			|| fEXP != EXPcurValue || fMaxEXP != MaxEXPValue) {
+			HPcurValue = fHP;
+			MaxHPValue = d.fMaxHP;
+			MPcurValue = fMP;
+			MaxMPValue = d.fMaxMP;
+			EXPcurValue = fEXP;
+			MaxEXPValue = fMaxEXP;
+			UpdateVitalBar ();
+		}
 	}
 	
 	void UpdateVitalBar() {
+		m_bDirty = false;
 		if (!displayText) {
-			vbHP.UpdateDisplay((float)(HPcurValue / MaxHPValue));
-			vbMP.UpdateDisplay((float)(MPcurValue / MaxMPValue));
+			vbHP.UpdateDisplay(HPcurValue / MaxHPValue);
+			vbMP.UpdateDisplay(MPcurValue / MaxMPValue);
 			if (vbEXP != null) {
-				vbEXP.UpdateDisplay((float)(EXPcurValue / MaxEXPValue));
+				vbEXP.UpdateDisplay(EXPcurValue / MaxEXPValue);
 			}
 		}
 		else {
-			vbHP.UpdateDisplay((float)(HPcurValue / MaxHPValue), HPcurValue + "/" + MaxHPValue);
-			vbMP.UpdateDisplay((float)(MPcurValue / MaxMPValue), MPcurValue + "/" + MaxMPValue);
+			vbHP.UpdateDisplay(HPcurValue / MaxHPValue, HPcurValue + "/" + MaxHPValue);
+			vbMP.UpdateDisplay(MPcurValue / MaxMPValue, MPcurValue + "/" + MaxMPValue);
 			if (vbEXP != null) {
-				vbEXP.UpdateDisplay((float)(EXPcurValue / MaxEXPValue), EXPcurValue + "/" + MaxEXPValue);
+				vbEXP.UpdateDisplay(EXPcurValue / MaxEXPValue, EXPcurValue + "/" + MaxEXPValue);
 			}
 		}
 	}
